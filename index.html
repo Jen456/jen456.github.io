@@ -144,6 +144,215 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
 @media(max-width:900px){nav{padding:14px 20px;}.nav-links{display:none;}.hero{padding:90px 20px 50px;}.hero-content{flex-direction:column-reverse;gap:36px;}.hero-photo-wrap{width:100%;max-width:290px;margin:auto;}.sec{padding:60px 20px;}.about-grid{grid-template-columns:1fr;}.espol-areas{grid-template-columns:1fr;}.contact-wrap{padding:70px 20px;}footer{flex-direction:column;gap:10px;text-align:center;padding:20px;}}
 </style>
 </head>
+<!-- ═══════════════════════════════════════════════════════
+     WIDGET CHAT IA — JENNY ÁLAVA
+     INSTRUCCIONES: Pega este bloque justo antes de </body>
+     en tu index.html en GitHub
+═══════════════════════════════════════════════════════ -->
+
+<!-- Fuentes -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+#jenny-chat-root{position:fixed;bottom:28px;right:28px;z-index:9999;font-family:'DM Sans',sans-serif}
+.jc-bubble{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#0a1628);border:2px solid rgba(201,168,76,.6);box-shadow:0 4px 24px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;animation:jc-pulse 3s ease-in-out infinite;position:relative}
+.jc-bubble:hover{transform:scale(1.08)}
+.jc-bubble svg{width:26px;height:26px}
+.jc-notif{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#e74c3c;border-radius:50%;border:2px solid #0d1117;display:none}
+.jc-notif.visible{display:block;animation:jc-pop .3s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes jc-pulse{0%,100%{box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 0 rgba(201,168,76,.4)}50%{box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 8px rgba(201,168,76,0)}}
+@keyframes jc-pop{from{transform:scale(0)}to{transform:scale(1)}}
+.jc-window{position:absolute;bottom:72px;right:0;width:340px;background:#0d1117;border:1px solid rgba(201,168,76,.25);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);overflow:hidden;display:none;flex-direction:column;transform-origin:bottom right}
+.jc-window.open{display:flex;animation:jc-win .25s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes jc-win{from{opacity:0;transform:scale(.85) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.jc-header{background:linear-gradient(135deg,#1a2535,#0f1c2e);padding:13px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(201,168,76,.2)}
+.jc-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c97a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#0d1117;flex-shrink:0}
+.jc-hinfo{flex:1}
+.jc-hname{font-size:13.5px;font-weight:600;color:#e6edf3}
+.jc-hstatus{font-size:11px;color:#c9a84c;display:flex;align-items:center;gap:4px}
+.jc-dot{width:6px;height:6px;background:#2ecc71;border-radius:50%;animation:jc-blink 2s infinite}
+@keyframes jc-blink{0%,100%{opacity:1}50%{opacity:.3}}
+.jc-close{background:none;border:none;cursor:pointer;color:#8b949e;font-size:17px;padding:2px 6px;border-radius:4px;transition:color .15s}
+.jc-close:hover{color:#e6edf3;background:rgba(255,255,255,.06)}
+.jc-handoff-bar{display:none;background:rgba(231,76,60,.1);border-bottom:1px solid rgba(231,76,60,.3);padding:9px 14px;font-size:12px;color:#ff8888;align-items:center;gap:8px}
+.jc-handoff-bar.visible{display:flex}
+.jc-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;max-height:300px;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.2) transparent}
+.jc-msg{display:flex;gap:7px;animation:jc-min .2s ease-out}
+@keyframes jc-min{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.jc-msg.user{flex-direction:row-reverse}
+.jc-bub{max-width:82%;padding:8px 12px;border-radius:13px;font-size:12.5px;line-height:1.5}
+.jc-msg.bot .jc-bub{background:#161b22;border:1px solid rgba(255,255,255,.07);color:#c9d1d9;border-radius:4px 13px 13px 13px}
+.jc-msg.user .jc-bub{background:linear-gradient(135deg,#1e3a5f,#162d4a);border:1px solid rgba(201,168,76,.2);color:#e6edf3;border-radius:13px 4px 13px 13px}
+.jc-msg.alert .jc-bub{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);color:#ff8888;font-size:12px;font-style:italic}
+.jc-typing{display:flex;gap:4px;align-items:center;padding:9px 13px}
+.jc-typing span{width:6px;height:6px;background:#c9a84c;border-radius:50%;animation:jc-tb 1.2s ease-in-out infinite}
+.jc-typing span:nth-child(2){animation-delay:.2s}
+.jc-typing span:nth-child(3){animation-delay:.4s}
+@keyframes jc-tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.jc-qr{display:flex;flex-wrap:wrap;gap:5px;padding:0 14px 11px}
+.jc-q{background:transparent;border:1px solid rgba(201,168,76,.35);color:#c9a84c;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.jc-q:hover{background:rgba(201,168,76,.1)}
+.jc-input-row{display:flex;gap:7px;align-items:flex-end;padding:11px 13px;border-top:1px solid rgba(255,255,255,.06);background:#0a0f17}
+.jc-inp{flex:1;background:#161b22;border:1px solid rgba(255,255,255,.1);color:#e6edf3;padding:8px 11px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:12.5px;resize:none;outline:none;transition:border-color .15s;max-height:90px;overflow-y:auto;line-height:1.4}
+.jc-inp:focus{border-color:rgba(201,168,76,.5)}
+.jc-inp::placeholder{color:#484f58}
+.jc-send{width:34px;height:34px;background:linear-gradient(135deg,#c9a84c,#a8883d);border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s}
+.jc-send:hover{transform:scale(1.06)}
+.jc-send svg{width:15px;height:15px;fill:#0d1117}
+.jc-footer{font-size:10px;color:#484f58;text-align:center;padding:5px 0 9px}
+.jc-hform{display:none;padding:13px;flex-direction:column;gap:9px;border-top:1px solid rgba(231,76,60,.2)}
+.jc-hform.visible{display:flex}
+.jc-hform label{font-size:11.5px;color:#8b949e}
+.jc-hform input{background:#161b22;border:1px solid rgba(255,255,255,.1);color:#e6edf3;padding:8px 11px;border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none}
+.jc-hform input:focus{border-color:#e74c3c}
+.jc-hsend{background:#e74c3c;border:none;color:#fff;padding:8px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;transition:opacity .15s}
+.jc-hsend:hover{opacity:.85}
+</style>
+
+<div id="jenny-chat-root">
+  <button class="jc-bubble" id="jcT" title="Chat con Jenny AI">
+    <div class="jc-notif" id="jcN"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+  <div class="jc-window" id="jcW">
+    <div class="jc-header">
+      <div class="jc-avatar">JA</div>
+      <div class="jc-hinfo">
+        <div class="jc-hname">Jenny Álava · IA</div>
+        <div class="jc-hstatus"><span class="jc-dot"></span>Asistente activo</div>
+      </div>
+      <button class="jc-close" id="jcC">✕</button>
+    </div>
+    <div class="jc-handoff-bar" id="jcHB">🔔 <span><strong>Jenny fue notificada.</strong> Te contactará pronto.</span></div>
+    <div class="jc-msgs" id="jcM"></div>
+    <div class="jc-qr" id="jcQR">
+      <button class="jc-q" data-msg="¿Qué servicios ofreces?">🛠 Servicios</button>
+      <button class="jc-q" data-msg="¿Cuál es tu experiencia en ciberseguridad?">🛡 Ciberseguridad</button>
+      <button class="jc-q" data-msg="Quiero contratar a Jenny">📩 Contratar</button>
+      <button class="jc-q" data-msg="¿Cuánto cobras?">💰 Tarifas</button>
+    </div>
+    <div class="jc-hform" id="jcHF">
+      <label>Deja tu email y Jenny te contactará:</label>
+      <input type="email" id="jcEM" placeholder="tu@email.com">
+      <button class="jc-hsend" id="jcHS">📬 Notificar a Jenny</button>
+    </div>
+    <div class="jc-input-row">
+      <textarea class="jc-inp" id="jcI" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+      <button class="jc-send" id="jcS">
+        <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+    <div class="jc-footer">Powered by Jenny AI · Claude</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var SYS="Eres el asistente virtual de Ing. Jenny Álava Bolaños, ingeniera ecuatoriana experta en electrónica, telecomunicaciones, ciberseguridad, IoT, robótica y full stack. Sitio web personal.\n\nSobre Jenny:\n- 13+ años de experiencia\n- CEO & CTO de SuproHosting (cloud hosting, VPS, seguridad web)\n- Directora de SUPRO Performance Agency\n- MSc Ciberseguridad en curso (UIDE)\n- CCNA triple certificada + CFOT\n- Habla español, inglés y ruso\n- Disponible para proyectos remotos y en Guayaquil, Ecuador\n- Email: jjalava456@hotmail.com | Tel: +593 968 279 747\n- GitHub: github.com/Jen456 | LinkedIn: linkedin.com/in/jenny-alava\n\nServicios: ciberseguridad, hosting, desarrollo web/móvil, domótica, redes, consultoría tech.\n\nResponde en el idioma del usuario. Sé conciso y profesional. Si el usuario quiere hablar con Jenny directamente o tiene una consulta de negocios importante, indícalo y pide su email.";
+  var TRIGGERS=["contratar","cotización","cotizacion","precio","cuánto cobras","cuanto cobras","presupuesto","urgente","hablar con jenny","persona real","humano"];
+  var state={open:false,msgs:[],init:false,handoff:false};
+  var $=function(id){return document.getElementById(id)};
+  var bubble=$('jcT'),win=$('jcW'),close=$('jcC'),msgs=$('jcM'),inp=$('jcI'),send=$('jcS'),notif=$('jcN'),qrs=$('jcQR'),hbar=$('jcHB'),hform=$('jcHF'),email=$('jcEM'),hsend=$('jcHS');
+
+  function toggle(){
+    state.open=!state.open;
+    win.classList.toggle('open',state.open);
+    notif.classList.remove('visible');
+    if(state.open&&!state.init){state.init=true;addBot("¡Hola! 👋 Soy el asistente de **Jenny Álava**. ¿En qué puedo ayudarte?")}
+    if(state.open)inp.focus();
+  }
+  bubble.addEventListener('click',toggle);
+  close.addEventListener('click',function(){state.open=false;win.classList.remove('open')});
+
+  function render(role,text){
+    var d=document.createElement('div');d.className='jc-msg '+role;
+    var b=document.createElement('div');b.className='jc-bub';
+    b.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    d.appendChild(b);msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function addBot(t){state.msgs.push({role:'assistant',content:t});render('bot',t)}
+  function addUser(t){state.msgs.push({role:'user',content:t});render('user',t)}
+  function showTyping(){
+    var d=document.createElement('div');d.className='jc-msg bot';d.id='jcTyp';
+    d.innerHTML='<div class="jc-typing"><span></span><span></span><span></span></div>';
+    msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function rmTyping(){var e=$('jcTyp');if(e)e.remove()}
+
+  function isHandoff(t){var l=t.toLowerCase();return TRIGGERS.some(function(tr){return l.indexOf(tr)>-1})}
+
+  function doHandoff(){
+    if(state.handoff)return;state.handoff=true;
+    hbar.classList.add('visible');
+    render('alert','🔔 Parece que deseas hablar directamente con Jenny. Deja tu email abajo y te contactará pronto.');
+    hform.classList.add('visible');
+    if(!state.open)notif.classList.add('visible');
+    console.log('HANDOFF solicitado — notificar a jjalava456@hotmail.com');
+  }
+
+  hsend.addEventListener('click',function(){
+    var em=email.value.trim();
+    if(!em||em.indexOf('@')<0){email.style.borderColor='#e74c3c';return}
+    hform.classList.remove('visible');
+    addBot('✅ **¡Listo!** Jenny fue notificada con tu email **('+em+')**. Te contactará pronto.');
+    console.log('HANDOFF EMAIL:',em,'| Hilo:',JSON.stringify(state.msgs));
+  });
+
+  document.querySelectorAll('.jc-q').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=b.getAttribute('data-msg');
+      qrs.style.display='none';
+      send_msg(m);
+    });
+  });
+
+  async function send_msg(text){
+    if(!text.trim())return;
+    inp.value='';inp.style.height='auto';
+    addUser(text);
+    if(isHandoff(text)){setTimeout(doHandoff,600);return}
+    showTyping();
+    try{
+      var r=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:400,
+          system:SYS,
+          messages:state.msgs.slice(-10)
+        })
+      });
+      rmTyping();
+      if(!r.ok)throw new Error(r.status);
+      var d=await r.json();
+      var reply=d.content&&d.content[0]&&d.content[0].text||'Lo siento, intenta de nuevo.';
+      addBot(reply);
+      if(reply.toLowerCase().indexOf('email')>-1||reply.toLowerCase().indexOf('contactar')>-1)hform.classList.add('visible');
+      if(!state.open)notif.classList.add('visible');
+    }catch(e){
+      rmTyping();
+      addBot('Ocurrió un error. Contáctame en **jjalava456@hotmail.com** o WhatsApp **+593 968 279 747**');
+    }
+  }
+
+  send.addEventListener('click',function(){send_msg(inp.value)});
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send_msg(inp.value)}
+  });
+  inp.addEventListener('input',function(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,90)+'px'});
+
+  setTimeout(function(){if(!state.open)notif.classList.add('visible')},6000);
+})();
+</script>
+
+<!-- ═══════════════════════════════
+     FIN DEL WIDGET
+═══════════════════════════════ -->
+
+
 <body>
 <div class="cursor" id="cur"></div>
 <div class="cursor-ring" id="curR"></div>
