@@ -8,86 +8,48 @@
 <meta name="keywords" content="ingeniera jenny alava, ciberseguridad ecuador, robotica guayaquil, arduino ecuador, CCNA, ESPOL ingenieria, IoT ecuador, freelancer tech">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Marked.js para renderizar Markdown en el chat -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- DOMPurify para sanear HTML generado -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <style>
-/* ═══════════════════════════════════════
-   VARIABLES & RESET
-═══════════════════════════════════════ */
+/* ═══════ VARIABLES ═══════ */
 :root{
   --navy:#030B1A;--dark:#06112A;--mid:#0A1C3E;
   --cyan:#00C8FF;--blue:#1A6DFF;--green:#00FF88;
   --text:#E8F0FF;--muted:#7A8FAF;
-  --chat-bg:#0d1117;--gold:#c9a84c;--gold-l:#e8c97a;
+  --gold:#c9a84c;--gold-l:#e8c97a;
+  --chat-bg:#0d1117;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--navy);color:var(--text);
-  overflow-x:hidden;cursor:none;
-}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text);overflow-x:hidden;cursor:none;}
 body.nav-open{overflow:hidden;}
-
-/* Custom cursor — hidden on touch */
 @media(pointer:coarse){body{cursor:auto;}.cursor,.cursor-ring{display:none;}}
-.cursor{width:10px;height:10px;border-radius:50%;background:var(--cyan);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:transform .08s;}
+.cursor{width:10px;height:10px;border-radius:50%;background:var(--cyan);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:screen;}
 .cursor-ring{width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,200,255,.5);position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .14s;}
-
-/* Scanlines overlay */
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,.012) 2px,rgba(0,200,255,.012) 4px);pointer-events:none;z-index:1000;}
 
-/* ═══════════════════════════════════════
-   NAV
-═══════════════════════════════════════ */
-nav{
-  position:fixed;top:0;width:100%;z-index:500;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:15px 60px;
-  backdrop-filter:blur(24px);
-  background:rgba(3,11,26,.9);
-  border-bottom:1px solid rgba(0,200,255,.07);
-}
+/* ═══════ NAV ═══════ */
+nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:15px 60px;backdrop-filter:blur(24px);background:rgba(3,11,26,.9);border-bottom:1px solid rgba(0,200,255,.07);}
 .nav-logo{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--cyan);font-weight:700;}
 .nav-links{display:flex;gap:28px;list-style:none;}
 .nav-links a{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
 .nav-links a:hover{color:var(--cyan);}
 .nav-cta{background:linear-gradient(90deg,var(--blue),var(--cyan));color:#000!important;font-weight:700!important;padding:6px 16px;border-radius:6px;}
-
-/* Hamburger */
-.nav-hamburger{
-  display:none;flex-direction:column;gap:5px;cursor:pointer;
-  background:none;border:none;padding:4px;z-index:600;
-}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;z-index:600;}
 .nav-hamburger span{display:block;width:24px;height:2px;background:var(--cyan);border-radius:2px;transition:all .3s;}
 .nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
 .nav-hamburger.open span:nth-child(2){opacity:0;}
 .nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
-
-/* Mobile nav overlay */
-.nav-mobile{
-  display:none;position:fixed;inset:0;z-index:490;
-  background:rgba(3,11,26,.98);backdrop-filter:blur(20px);
-  flex-direction:column;align-items:center;justify-content:center;gap:32px;
-}
+.nav-mobile{display:none;position:fixed;inset:0;z-index:490;background:rgba(3,11,26,.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:32px;}
 .nav-mobile.open{display:flex;}
-.nav-mobile a{
-  font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:3px;
-  text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;
-}
+.nav-mobile a{font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
 .nav-mobile a:hover{color:var(--cyan);}
-.nav-mobile .nav-cta{
-  background:linear-gradient(90deg,var(--blue),var(--cyan));
-  color:#000!important;font-weight:700!important;
-  padding:12px 32px;border-radius:8px;
-}
+.nav-mobile .nav-cta{background:linear-gradient(90deg,var(--blue),var(--cyan));color:#000!important;font-weight:700!important;padding:12px 32px;border-radius:8px;}
 
-/* ═══════════════════════════════════════
-   HERO
-═══════════════════════════════════════ */
-.hero{
-  min-height:100vh;display:flex;align-items:center;
-  position:relative;overflow:hidden;
-  padding:100px 60px 60px;
-}
+/* ═══════ HERO ═══════ */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:100px 60px 60px;}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(26,109,255,.13),transparent 70%),radial-gradient(ellipse 40% 50% at 15% 70%,rgba(0,200,255,.07),transparent 60%);}
 .hero-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(var(--cyan) 1px,transparent 1px),linear-gradient(90deg,var(--cyan) 1px,transparent 1px);background-size:50px 50px;}
 .hero-content{position:relative;z-index:2;display:flex;align-items:center;gap:70px;width:100%;max-width:1300px;margin:auto;}
@@ -104,12 +66,10 @@ h1 .c{color:var(--cyan);}
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--cyan);line-height:1;}
 .stat-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fadeUp .6s .8s forwards;}
-
 .btn-p{background:linear-gradient(90deg,var(--blue),var(--cyan));color:#000;font-weight:700;padding:12px 28px;border:none;border-radius:8px;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .2s,box-shadow .2s;}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,200,255,.3);}
 .btn-o{border:1px solid rgba(0,200,255,.35);color:var(--cyan);padding:12px 28px;border-radius:8px;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;background:transparent;transition:all .2s;}
 .btn-o:hover{background:rgba(0,200,255,.07);border-color:var(--cyan);}
-
 .hero-photo-wrap{flex-shrink:0;position:relative;width:310px;opacity:0;animation:fadeUp .6s .45s forwards;}
 .hero-photo-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 0 60px rgba(26,109,255,.22);}
 .hero-photo-frame::before{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to top,var(--navy) 0%,transparent 35%);}
@@ -117,33 +77,22 @@ h1 .c{color:var(--cyan);}
 .cert-badges{position:absolute;right:-16px;top:22px;z-index:5;display:flex;flex-direction:column;gap:7px;}
 .cbadge{background:rgba(6,17,42,.95);border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:1px;white-space:nowrap;}
 
-/* ═══════════════════════════════════════
-   SECTIONS GENERAL
-═══════════════════════════════════════ */
+/* ═══════ SECTIONS ═══════ */
 .sec{padding:90px 60px;max-width:1300px;margin:auto;}
 .sec-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
 .sec-tag::after{content:'';flex:1;height:1px;background:rgba(0,200,255,.12);}
 h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,52px);letter-spacing:1px;margin-bottom:14px;}
 .sec-sub{color:var(--muted);font-size:15px;max-width:540px;margin-bottom:50px;line-height:1.65;}
-
-/* ═══════════════════════════════════════
-   STACK GRID
-═══════════════════════════════════════ */
 .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
 .stack-card{background:rgba(6,17,42,.8);border:1px solid rgba(0,200,255,.08);border-radius:13px;padding:22px;transition:all .3s;}
 .stack-card:hover{border-color:rgba(0,200,255,.28);transform:translateY(-3px);}
 .stack-category{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:13px;}
 .tech-pills{display:flex;flex-wrap:wrap;gap:6px;}
 .pill{font-size:11px;color:var(--text);background:rgba(26,109,255,.1);border:1px solid rgba(26,109,255,.18);padding:4px 9px;border-radius:4px;transition:all .2s;}
-.pill:hover{background:rgba(0,200,255,.14);border-color:var(--cyan);color:var(--cyan);}
-.pill.hot{background:rgba(0,200,255,.09);border-color:rgba(0,200,255,.28);color:var(--cyan);}
-
-/* ═══════════════════════════════════════
-   SERVICES
-═══════════════════════════════════════ */
+.pill:hover,.pill.hot{background:rgba(0,200,255,.09);border-color:rgba(0,200,255,.28);color:var(--cyan);}
 .srv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;}
 .srv-card{background:linear-gradient(135deg,rgba(6,17,42,.9),rgba(10,28,62,.5));border:1px solid rgba(0,200,255,.09);border-radius:13px;padding:26px;transition:all .3s;position:relative;overflow:hidden;}
-.srv-card:hover{border-color:rgba(0,200,255,.35);transform:translateY(-4px);box-shadow:0 18px 36px rgba(0,200,255,.09);}
+.srv-card:hover{border-color:rgba(0,200,255,.35);transform:translateY(-4px);}
 .srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:.3s;}
 .srv-card:hover::before{opacity:1;}
 .srv-icon{font-size:26px;margin-bottom:13px;}
@@ -151,65 +100,45 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,52px);letter-spa
 .srv-desc{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:16px;}
 .srv-price{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid rgba(0,200,255,.25);padding:4px 11px;border-radius:4px;display:inline-block;}
 .chip{font-size:10px;color:#7A8FAF;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:3px 7px;border-radius:3px;display:inline-block;margin:2px;}
-
-/* ═══════════════════════════════════════
-   PROJECTS
-═══════════════════════════════════════ */
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
 .proj-card{background:rgba(6,17,42,.85);border:1px solid rgba(0,200,255,.09);border-radius:13px;padding:24px;transition:all .3s;text-decoration:none;color:var(--text);display:block;}
-.proj-card:hover{border-color:rgba(0,200,255,.3);transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,200,255,.08);}
+.proj-card:hover{border-color:rgba(0,200,255,.3);transform:translateY(-3px);}
 .proj-lang{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;margin-bottom:9px;}
 .proj-name{font-size:16px;font-weight:700;margin-bottom:7px;color:var(--cyan);}
 .proj-desc{font-size:12px;color:var(--muted);line-height:1.55;}
-
-/* ═══════════════════════════════════════
-   ESPOL
-═══════════════════════════════════════ */
 .espol-areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:32px;}
 .espol-area{background:rgba(6,17,42,.8);border:1px solid rgba(0,200,255,.09);border-radius:14px;padding:26px;transition:all .3s;}
 .espol-area:hover{border-color:rgba(0,200,255,.28);}
 .area-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
 .area-icon{font-size:26px;flex-shrink:0;margin-top:2px;}
 .area-title{font-size:16px;font-weight:700;margin-bottom:4px;}
-.area-courses{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:.5px;line-height:1.5;}
+.area-courses{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);line-height:1.5;}
 .area-projects{display:flex;flex-direction:column;gap:7px;}
 .aproj{font-size:13px;color:var(--muted);padding:7px 10px;background:rgba(26,109,255,.05);border-left:2px solid rgba(0,200,255,.2);border-radius:0 5px 5px 0;transition:all .2s;}
-.aproj:hover{color:var(--text);border-left-color:var(--cyan);background:rgba(0,200,255,.06);}
+.aproj:hover{color:var(--text);border-left-color:var(--cyan);}
 .espol-footer{display:flex;align-items:center;gap:28px;background:linear-gradient(135deg,rgba(26,109,255,.1),rgba(0,200,255,.07));border:1px solid rgba(0,200,255,.2);border-radius:14px;padding:28px 32px;flex-wrap:wrap;}
 .espol-badge-big{background:linear-gradient(135deg,var(--blue),var(--cyan));padding:14px 22px;border-radius:10px;flex-shrink:0;text-align:center;}
-
-/* ═══════════════════════════════════════
-   ABOUT
-═══════════════════════════════════════ */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;}
 .about-photo{border-radius:16px;overflow:hidden;box-shadow:0 0 40px rgba(26,109,255,.18);position:relative;}
 .about-photo img{width:100%;display:block;object-fit:cover;object-position:top;height:460px;}
 .exp-box{position:absolute;bottom:-16px;right:-16px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:11px;padding:22px 26px;text-align:center;}
 .exp-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:#000;line-height:1;}
-.exp-label{font-size:11px;color:rgba(0,0,0,.75);font-weight:700;letter-spacing:1px;}
+.exp-label{font-size:11px;color:rgba(0,0,0,.75);font-weight:700;}
 .tl-item{display:flex;gap:14px;margin-bottom:20px;}
 .tl-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:5px;}
 .tl-year{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);width:74px;flex-shrink:0;padding-top:3px;}
 .tl-content h4{font-size:14px;font-weight:600;margin-bottom:3px;}
 .tl-content p{font-size:12px;color:var(--muted);}
-
-/* ═══════════════════════════════════════
-   CERTS
-═══════════════════════════════════════ */
 .certs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;}
 .cert-card{background:rgba(6,17,42,.8);border:1px solid rgba(0,200,255,.07);border-radius:12px;padding:20px 16px;text-align:center;transition:all .3s;}
 .cert-card:hover{border-color:rgba(0,200,255,.28);transform:translateY(-3px);}
 .cert-icon{font-size:24px;margin-bottom:9px;}
 .cert-name{font-size:13px;font-weight:700;margin-bottom:5px;}
 .cert-issuer{font-size:11px;color:var(--muted);}
-
-/* ═══════════════════════════════════════
-   PRICING
-═══════════════════════════════════════ */
 .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
 .price-card{background:rgba(6,17,42,.8);border:1px solid rgba(0,200,255,.09);border-radius:14px;padding:28px;position:relative;overflow:hidden;}
 .price-card.feat{border-color:var(--cyan);background:linear-gradient(135deg,rgba(26,109,255,.14),rgba(0,200,255,.07));}
-.price-card.feat::before{content:'POPULAR';position:absolute;top:14px;right:-26px;background:var(--cyan);color:#000;font-size:9px;font-weight:800;letter-spacing:1px;padding:4px 36px;transform:rotate(35deg);}
+.price-card.feat::before{content:'POPULAR';position:absolute;top:14px;right:-26px;background:var(--cyan);color:#000;font-size:9px;font-weight:800;padding:4px 36px;transform:rotate(35deg);}
 .price-tier{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
 .price-amt{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--cyan);line-height:1;margin-bottom:4px;}
 .price-amt span{font-size:20px;}
@@ -217,219 +146,250 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,52px);letter-spa
 .price-feats{list-style:none;margin-bottom:24px;}
 .price-feats li{font-size:13px;color:var(--muted);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:7px;}
 .price-feats li::before{content:'→';color:var(--cyan);font-size:11px;}
-
-/* ═══════════════════════════════════════
-   CONTACT
-═══════════════════════════════════════ */
 .contact-wrap{background:linear-gradient(135deg,rgba(6,17,42,.95),rgba(3,11,26,1));border-top:1px solid rgba(0,200,255,.07);padding:90px 60px;text-align:center;}
 .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
 .clink{display:flex;align-items:center;gap:10px;background:rgba(10,28,62,.8);border:1px solid rgba(0,200,255,.13);border-radius:10px;padding:12px 20px;text-decoration:none;color:var(--text);font-size:13px;transition:all .2s;}
 .clink:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
-
 footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding:22px 60px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);flex-wrap:wrap;gap:10px;}
-
-/* ═══════════════════════════════════════
-   ANIMATIONS
-═══════════════════════════════════════ */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ═══════════════════════════════════════
-   CHAT WIDGET
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   CHATBOT WIDGET  — diseño completo
+═══════════════════════════════════════════ */
 #jc-root{position:fixed;bottom:24px;right:24px;z-index:9000;font-family:'DM Sans',sans-serif;}
 
-/* Bubble */
+/* Burbuja flotante */
 .jc-bubble{
-  width:58px;height:58px;border-radius:50%;
-  background:linear-gradient(135deg,#1e3a5f,#0a1628);
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,#1a2f50,#0a1628);
   border:2px solid rgba(201,168,76,.7);
-  box-shadow:0 4px 20px rgba(0,0,0,.5);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:transform .2s,box-shadow .2s;
   animation:jc-pulse 3s ease-in-out infinite;
-  position:relative;
+  position:relative;box-shadow:0 4px 20px rgba(0,0,0,.5);
 }
-.jc-bubble:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(201,168,76,.35);}
-.jc-bubble svg{width:24px;height:24px;}
+.jc-bubble:hover{transform:scale(1.1);}
+.jc-bubble svg{width:26px;height:26px;}
 .jc-notif{
   position:absolute;top:-3px;right:-3px;
-  width:14px;height:14px;background:#e74c3c;
+  width:16px;height:16px;background:#e74c3c;
   border-radius:50%;border:2px solid var(--navy);
-  display:none;
+  display:none;font-size:9px;color:#fff;
+  align-items:center;justify-content:center;font-weight:700;
 }
-.jc-notif.on{display:block;animation:jc-pop .3s ease;}
+.jc-notif.on{display:flex;animation:jc-pop .3s ease;}
 @keyframes jc-pulse{
   0%,100%{box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 0 rgba(201,168,76,.4);}
-  50%{box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 8px rgba(201,168,76,0);}
+  50%{box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 10px rgba(201,168,76,0);}
 }
 @keyframes jc-pop{from{transform:scale(0)}to{transform:scale(1)}}
 
-/* Window */
+/* Ventana del chat */
 .jc-win{
-  position:absolute;bottom:70px;right:0;
-  width:340px;max-height:80vh;
+  position:absolute;bottom:72px;right:0;
+  width:360px;
   background:var(--chat-bg);
-  border:1px solid rgba(201,168,76,.25);
+  border:1px solid rgba(201,168,76,.2);
   border-radius:18px;
-  box-shadow:0 24px 64px rgba(0,0,0,.7);
+  box-shadow:0 28px 70px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03);
   display:none;flex-direction:column;
-  overflow:hidden;
-  transform-origin:bottom right;
+  overflow:hidden;transform-origin:bottom right;
+  max-height:min(600px, 80vh);
 }
-.jc-win.open{display:flex;animation:jc-open .25s ease;}
-@keyframes jc-open{from{opacity:0;transform:scale(.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.jc-win.open{display:flex;animation:jc-open .28s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes jc-open{from{opacity:0;transform:scale(.85) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
 /* Header */
 .jc-hdr{
-  background:linear-gradient(135deg,#1a2535,#0f1c2e);
-  padding:13px 15px;display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid rgba(201,168,76,.2);flex-shrink:0;
+  background:linear-gradient(135deg,#111d2e,#0a1322);
+  padding:14px 16px;display:flex;align-items:center;gap:11px;
+  border-bottom:1px solid rgba(201,168,76,.15);flex-shrink:0;
 }
 .jc-av{
-  width:36px;height:36px;border-radius:50%;
+  width:38px;height:38px;border-radius:50%;
   background:linear-gradient(135deg,var(--gold),var(--gold-l));
   display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:13px;color:#0d1117;flex-shrink:0;
+  font-weight:800;font-size:13px;color:#0d1117;flex-shrink:0;
+  box-shadow:0 0 12px rgba(201,168,76,.4);
 }
-.jc-hname{font-size:13px;font-weight:600;color:#e6edf3;}
-.jc-hst{font-size:10.5px;color:var(--gold);display:flex;align-items:center;gap:4px;}
-.jc-dot{width:5px;height:5px;background:#2ecc71;border-radius:50%;animation:jc-blink 2s infinite;}
-@keyframes jc-blink{0%,100%{opacity:1}50%{opacity:.3}}
-.jc-cls{background:none;border:none;cursor:pointer;color:#8b949e;font-size:16px;margin-left:auto;padding:2px 6px;border-radius:4px;transition:color .15s;}
-.jc-cls:hover{color:#e6edf3;background:rgba(255,255,255,.07);}
+.jc-hinfo{flex:1;}
+.jc-hname{font-size:13.5px;font-weight:700;color:#e8edf4;letter-spacing:.2px;}
+.jc-hst{font-size:10.5px;color:var(--gold);display:flex;align-items:center;gap:5px;margin-top:2px;}
+.jc-dot{width:6px;height:6px;background:#2ecc71;border-radius:50%;animation:jc-blink 2s infinite;flex-shrink:0;}
+@keyframes jc-blink{0%,100%{opacity:1}50%{opacity:.25}}
+.jc-hbadge{
+  font-size:9px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);
+  color:var(--cyan);padding:2px 7px;border-radius:3px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.5px;
+}
+.jc-cls{background:none;border:none;cursor:pointer;color:#5a6478;font-size:18px;padding:2px 4px;border-radius:4px;transition:color .15s;line-height:1;margin-left:4px;}
+.jc-cls:hover{color:#e8edf4;}
 
-/* Messages */
+/* Mensajes */
 .jc-msgs{
-  flex:1;overflow-y:auto;padding:14px;
-  display:flex;flex-direction:column;gap:10px;
-  min-height:160px;max-height:320px;
-  scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.2) transparent;
+  flex:1;overflow-y:auto;padding:16px 14px;
+  display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.15) transparent;
 }
 .jc-msgs::-webkit-scrollbar{width:4px;}
-.jc-msgs::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:2px;}
+.jc-msgs::-webkit-scrollbar-thumb{background:rgba(201,168,76,.15);border-radius:2px;}
 
-.jc-msg{display:flex;gap:7px;animation:jc-min .2s ease;}
-@keyframes jc-min{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.jc-msg{display:flex;gap:8px;animation:jc-min .22s ease;}
+@keyframes jc-min{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .jc-msg.user{flex-direction:row-reverse;}
-.jc-bub{max-width:83%;padding:8px 12px;border-radius:13px;font-size:12.5px;line-height:1.5;}
-.jc-msg.bot .jc-bub{background:#161b22;border:1px solid rgba(255,255,255,.07);color:#c9d1d9;border-radius:4px 13px 13px 13px;}
-.jc-msg.user .jc-bub{background:linear-gradient(135deg,#1e3a5f,#162d4a);border:1px solid rgba(201,168,76,.2);color:#e6edf3;border-radius:13px 4px 13px 13px;}
+
+.jc-bub{
+  max-width:84%;padding:9px 13px;
+  border-radius:14px;font-size:13px;line-height:1.55;
+  word-break:break-word;
+}
+.jc-msg.bot .jc-bub{
+  background:#141b25;
+  border:1px solid rgba(255,255,255,.06);
+  color:#c8d4e8;
+  border-radius:4px 14px 14px 14px;
+}
+/* Markdown dentro de bubble bot */
+.jc-msg.bot .jc-bub p{margin-bottom:6px;}
+.jc-msg.bot .jc-bub p:last-child{margin-bottom:0;}
+.jc-msg.bot .jc-bub strong{color:#e8edf4;font-weight:600;}
+.jc-msg.bot .jc-bub ul,.jc-msg.bot .jc-bub ol{margin:6px 0 6px 16px;}
+.jc-msg.bot .jc-bub li{margin-bottom:3px;}
+.jc-msg.bot .jc-bub code{background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);}
+.jc-msg.user .jc-bub{
+  background:linear-gradient(135deg,#1a3356,#13274a);
+  border:1px solid rgba(201,168,76,.18);
+  color:#dde6f4;
+  border-radius:14px 4px 14px 14px;
+}
 
 /* Typing */
-.jc-typing{display:flex;gap:4px;align-items:center;padding:9px 13px;}
-.jc-typing span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:jc-tb 1.2s ease-in-out infinite;}
+.jc-typing-wrap{display:flex;gap:8px;align-items:flex-end;}
+.jc-typing{
+  background:#141b25;border:1px solid rgba(255,255,255,.06);
+  border-radius:4px 14px 14px 14px;
+  padding:12px 16px;display:flex;gap:5px;align-items:center;
+}
+.jc-typing span{
+  width:7px;height:7px;background:var(--gold);border-radius:50%;
+  animation:jc-tb 1.3s ease-in-out infinite;
+}
 .jc-typing span:nth-child(2){animation-delay:.2s;}
 .jc-typing span:nth-child(3){animation-delay:.4s;}
-@keyframes jc-tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+@keyframes jc-tb{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-6px);opacity:1}}
 
 /* Quick replies */
-.jc-qr{display:flex;flex-wrap:wrap;gap:5px;padding:0 13px 11px;flex-shrink:0;}
-.jc-q{
-  background:transparent;border:1px solid rgba(201,168,76,.3);
-  color:var(--gold);padding:4px 10px;border-radius:20px;
-  font-size:11px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:all .15s;
+.jc-qr{
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:8px 14px 10px;flex-shrink:0;
+  border-top:1px solid rgba(255,255,255,.04);
+  background:rgba(0,0,0,.15);
 }
-.jc-q:hover{background:rgba(201,168,76,.1);}
+.jc-qr-label{width:100%;font-size:10px;color:#5a6478;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;margin-bottom:2px;}
+.jc-q{
+  background:transparent;
+  border:1px solid rgba(201,168,76,.28);
+  color:var(--gold);padding:5px 12px;border-radius:20px;
+  font-size:11.5px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all .18s;white-space:nowrap;
+}
+.jc-q:hover{background:rgba(201,168,76,.12);border-color:var(--gold);}
 
 /* Input row */
 .jc-irow{
-  display:flex;gap:7px;align-items:flex-end;
-  padding:11px 12px;border-top:1px solid rgba(255,255,255,.06);
-  background:#0a0f17;flex-shrink:0;
+  display:flex;gap:8px;align-items:flex-end;
+  padding:10px 12px;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:#080d14;flex-shrink:0;
 }
 .jc-inp{
-  flex:1;background:#161b22;border:1px solid rgba(255,255,255,.1);
-  color:#e6edf3;padding:8px 11px;border-radius:9px;
-  font-family:'DM Sans',sans-serif;font-size:12.5px;
-  resize:none;outline:none;transition:border-color .15s;
-  max-height:80px;overflow-y:auto;line-height:1.4;
+  flex:1;background:#141b25;
+  border:1px solid rgba(255,255,255,.08);
+  color:#dde6f4;padding:9px 12px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  resize:none;outline:none;transition:border-color .18s;
+  max-height:90px;overflow-y:auto;line-height:1.4;
 }
 .jc-inp:focus{border-color:rgba(201,168,76,.5);}
-.jc-inp::placeholder{color:#484f58;}
+.jc-inp::placeholder{color:#3d4860;}
 .jc-send{
-  width:34px;height:34px;
-  background:linear-gradient(135deg,var(--gold),#a8883d);
-  border:none;border-radius:9px;cursor:pointer;
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--gold),#9a7332);
+  border:none;border-radius:10px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:transform .15s;
+  flex-shrink:0;transition:transform .15s,opacity .15s;
 }
-.jc-send:hover{transform:scale(1.07);}
-.jc-send svg{width:14px;height:14px;fill:#0d1117;}
-.jc-foot{font-size:10px;color:#484f58;text-align:center;padding:5px 0 9px;flex-shrink:0;}
+.jc-send:hover{transform:scale(1.08);}
+.jc-send:disabled{opacity:.4;cursor:not-allowed;}
+.jc-send svg{width:15px;height:15px;fill:#0d1117;}
 
-/* ═══════════════════════════════════════
-   RESPONSIVE — TABLET (≤900px)
-═══════════════════════════════════════ */
+/* Footer del chat */
+.jc-chat-foot{
+  font-size:10px;color:#3d4860;text-align:center;
+  padding:6px 0 8px;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.3px;
+}
+
+/* Status bar (muestra si usa Gemini o local) */
+.jc-status{
+  font-size:10px;text-align:center;padding:4px 14px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.3px;flex-shrink:0;
+}
+.jc-status.ai{color:var(--cyan);background:rgba(0,200,255,.06);}
+.jc-status.local{color:var(--gold);background:rgba(201,168,76,.06);}
+
+/* ═══════ RESPONSIVE ═══════ */
 @media(max-width:900px){
   nav{padding:14px 20px;}
   .nav-links{display:none;}
   .nav-hamburger{display:flex;}
-
   .hero{padding:90px 20px 50px;}
   .hero-content{flex-direction:column-reverse;gap:32px;}
-  .hero-photo-wrap{width:100%;max-width:280px;margin:auto;}
-  .hero-photo-frame img{height:300px;}
-  .cert-badges{right:-10px;top:10px;}
-  .cbadge{font-size:8px;padding:4px 7px;}
+  .hero-photo-wrap{width:100%;max-width:260px;margin:auto;}
+  .hero-photo-frame img{height:280px;}
+  .cert-badges{right:-8px;top:8px;}
+  .cbadge{font-size:8px;padding:3px 6px;}
   .hero-stats{gap:20px;}
-
   .sec{padding:60px 20px;}
   .espol-areas{grid-template-columns:1fr;}
   .about-grid{grid-template-columns:1fr;gap:50px;}
-  .about-photo img{height:340px;}
-  .exp-box{bottom:-12px;right:-12px;padding:16px 20px;}
+  .about-photo img{height:300px;}
+  .exp-box{bottom:-12px;right:-12px;padding:14px 18px;}
   .exp-num{font-size:36px;}
   .espol-footer{flex-direction:column;gap:16px;}
   .contact-wrap{padding:70px 20px;}
-  footer{padding:20px;}
+  footer{padding:20px;flex-direction:column;gap:8px;text-align:center;}
 }
-
-/* ═══════════════════════════════════════
-   RESPONSIVE — MOBILE (≤480px)
-═══════════════════════════════════════ */
-@media(max-width:480px){
-  h1{font-size:clamp(38px,11vw,56px);}
-  h2{font-size:clamp(26px,7vw,38px);}
-  .hero-desc{font-size:14px;}
+@media(max-width:600px){
+  h1{font-size:clamp(36px,10vw,54px);}
   .hero-ctas{flex-direction:column;}
-  .btn-p,.btn-o{text-align:center;width:100%;}
-  .hero-stats{gap:16px;}
-  .stat-num{font-size:30px;}
-
-  .stack-grid{grid-template-columns:1fr;}
-  .srv-grid{grid-template-columns:1fr;}
-  .proj-grid{grid-template-columns:1fr;}
+  .btn-p,.btn-o{text-align:center;}
+  .stack-grid,.srv-grid,.proj-grid,.price-grid{grid-template-columns:1fr;}
   .certs-grid{grid-template-columns:repeat(2,1fr);}
-  .price-grid{grid-template-columns:1fr;}
   .contact-links{flex-direction:column;}
   .clink{width:100%;}
-
-  /* Chat widget full-width on mobile */
-  #jc-root{bottom:0;right:0;left:0;}
-  .jc-bubble{margin:0 auto 16px;display:flex;position:fixed;bottom:16px;right:16px;left:auto;}
+  /* Chat full-width en móvil */
+  #jc-root{bottom:0;right:0;left:0;display:flex;flex-direction:column;align-items:flex-end;padding:0 16px 16px;}
   .jc-win{
-    position:fixed;bottom:0;left:0;right:0;
-    width:100%;border-radius:18px 18px 0 0;
-    max-height:85vh;
+    position:fixed;inset:0;border-radius:0;
+    width:100%;max-height:100vh;
+    bottom:0;right:0;left:0;top:0;
   }
+  .jc-win.open{animation:jc-open-m .28s ease;}
+  @keyframes jc-open-m{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:translateY(0)}}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════
-     CURSOR (desktop)
-════════════════════════════════ -->
 <div class="cursor" id="cur"></div>
 <div class="cursor-ring" id="curR"></div>
 
-<!-- ════════════════════════════════
-     NAV
-════════════════════════════════ -->
+<!-- NAV -->
 <nav>
   <div class="nav-logo">// INGENIERA JENNY</div>
   <ul class="nav-links">
@@ -440,24 +400,18 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
     <li><a href="#sobre-mi">Sobre Mí</a></li>
     <li><a href="#contacto" class="nav-cta">Contratar</a></li>
   </ul>
-  <button class="nav-hamburger" id="navBtn" aria-label="Menú">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="nav-hamburger" id="navBtn" aria-label="Menú"><span></span><span></span><span></span></button>
 </nav>
-
-<!-- Mobile nav overlay -->
 <div class="nav-mobile" id="navMobile">
-  <a href="#stack" class="nav-mobile-link">Stack</a>
-  <a href="#servicios" class="nav-mobile-link">Servicios</a>
-  <a href="#proyectos" class="nav-mobile-link">Proyectos</a>
-  <a href="#formacion" class="nav-mobile-link">ESPOL</a>
-  <a href="#sobre-mi" class="nav-mobile-link">Sobre Mí</a>
-  <a href="#contacto" class="nav-cta nav-mobile-link">Contratar</a>
+  <a href="#stack" class="nav-ml">Stack</a>
+  <a href="#servicios" class="nav-ml">Servicios</a>
+  <a href="#proyectos" class="nav-ml">Proyectos</a>
+  <a href="#formacion" class="nav-ml">ESPOL</a>
+  <a href="#sobre-mi" class="nav-ml">Sobre Mí</a>
+  <a href="#contacto" class="nav-cta nav-ml">Contratar</a>
 </div>
 
-<!-- ════════════════════════════════
-     HERO
-════════════════════════════════ -->
+<!-- HERO -->
 <div class="hero">
   <div class="hero-bg"></div><div class="hero-grid"></div>
   <div class="hero-content">
@@ -469,7 +423,7 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
         <span class="role-tag">🤖 Robótica & IoT</span><span class="role-tag">🌐 Redes Cisco</span>
         <span class="role-tag">💻 Full Stack Dev</span><span class="role-tag">📡 Telecomunicaciones</span>
       </div>
-      <p class="hero-desc">Ingeniera por la <strong>ESPOL</strong>, MSc en Ciberseguridad. Construyo robots, configuro redes, audito sistemas y desarrollo software. Base científica real de 5 años de ingeniería aplicada.</p>
+      <p class="hero-desc">Ingeniera por la <strong>ESPOL</strong>, MSc en Ciberseguridad. Construyo robots, configuro redes, audito sistemas y desarrollo software.</p>
       <div class="hero-stats">
         <div><div class="stat-num">13+</div><div class="stat-label">Años Exp.</div></div>
         <div><div class="stat-num">74</div><div class="stat-label">Repos GitHub</div></div>
@@ -483,120 +437,103 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
     </div>
     <div class="hero-photo-wrap">
       <div class="hero-photo-frame">
-        <img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.style.display='none'">
+        <img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.style.minHeight='300px';this.style.display='block';">
       </div>
       <div class="cert-badges">
         <div class="cbadge">✦ CCNA 1·2·3</div><div class="cbadge">✦ CFOT</div>
-        <div class="cbadge">✦ MSc CYBER</div><div class="cbadge">✦ ESPOL</div>
-        <div class="cbadge">✦ 74 REPOS</div>
+        <div class="cbadge">✦ MSc CYBER</div><div class="cbadge">✦ ESPOL</div><div class="cbadge">✦ 74 REPOS</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     STACK
-════════════════════════════════ -->
+<!-- STACK -->
 <section class="sec" id="stack">
   <div class="sec-tag">Stack Técnico</div>
   <h2>LO QUE <span style="color:var(--cyan)">DOMINO</span></h2>
   <p class="sec-sub">Construido en 5 años de ESPOL + 13 años de proyectos reales.</p>
   <div class="stack-grid">
     <div class="stack-card reveal"><div class="stack-category">💻 Lenguajes</div><div class="tech-pills"><span class="pill hot">Python</span><span class="pill hot">PHP</span><span class="pill hot">JavaScript</span><span class="pill">C/C++</span><span class="pill">SQL</span><span class="pill">MATLAB</span><span class="pill">Assembler</span></div></div>
-    <div class="stack-card reveal"><div class="stack-category">⚙️ Backend & Frameworks</div><div class="tech-pills"><span class="pill hot">Node.js</span><span class="pill hot">Django</span><span class="pill">Vue.js</span><span class="pill">Bootstrap</span><span class="pill">REST APIs</span><span class="pill">NativeScript</span></div></div>
+    <div class="stack-card reveal"><div class="stack-category">⚙️ Backend & Frameworks</div><div class="tech-pills"><span class="pill hot">Node.js</span><span class="pill hot">Django</span><span class="pill">Vue.js</span><span class="pill">Bootstrap</span><span class="pill">REST APIs</span><span class="pill">Laravel</span></div></div>
     <div class="stack-card reveal"><div class="stack-category">🤖 Hardware & IoT</div><div class="tech-pills"><span class="pill hot">Arduino</span><span class="pill hot">Raspberry Pi</span><span class="pill hot">ESP8266</span><span class="pill">FPGA</span><span class="pill">VHDL</span><span class="pill">PCB</span></div></div>
     <div class="stack-card reveal"><div class="stack-category">🌐 Redes & Telecom</div><div class="tech-pills"><span class="pill hot">Cisco CCNA</span><span class="pill hot">TCP/IP</span><span class="pill">LAN/WAN/WLAN</span><span class="pill">Fibra Óptica</span><span class="pill">VoIP/SIP</span><span class="pill">VLAN/VPN</span></div></div>
     <div class="stack-card reveal"><div class="stack-category">🛡️ Ciberseguridad</div><div class="tech-pills"><span class="pill hot">Nmap</span><span class="pill hot">ZAProxy</span><span class="pill hot">Shodan</span><span class="pill">Kali Linux</span><span class="pill">CVE</span><span class="pill">Pentesting</span></div></div>
-    <div class="stack-card reveal"><div class="stack-category">☁️ Cloud & Servidores</div><div class="tech-pills"><span class="pill hot">cPanel/WHM</span><span class="pill">AWS</span><span class="pill">Azure</span><span class="pill">Linux</span><span class="pill">Git/GitHub</span><span class="pill">ERPNext</span></div></div>
-    <div class="stack-card reveal"><div class="stack-category">🗄️ Datos</div><div class="tech-pills"><span class="pill hot">MySQL</span><span class="pill hot">PostgreSQL</span><span class="pill">SQL Server</span><span class="pill">FFT/DSP</span><span class="pill">Scrum</span></div></div>
+    <div class="stack-card reveal"><div class="stack-category">☁️ Cloud & Servidores</div><div class="tech-pills"><span class="pill hot">cPanel/WHM</span><span class="pill">AWS</span><span class="pill">Azure</span><span class="pill">Linux</span><span class="pill">Cloudflare</span><span class="pill">Git</span></div></div>
+    <div class="stack-card reveal"><div class="stack-category">🗄️ Bases de Datos</div><div class="tech-pills"><span class="pill hot">MySQL</span><span class="pill hot">PostgreSQL</span><span class="pill">SQL Server</span><span class="pill">FFT/DSP</span><span class="pill">Scrum</span></div></div>
     <div class="stack-card reveal"><div class="stack-category">🎨 Diseño</div><div class="tech-pills"><span class="pill">Photoshop</span><span class="pill">Illustrator</span><span class="pill">CorelDRAW</span><span class="pill">AutoCAD Eléctrico</span><span class="pill">WordPress</span></div></div>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     SERVICIOS
-════════════════════════════════ -->
+<!-- SERVICIOS -->
 <section class="sec" id="servicios">
   <div class="sec-tag">Servicios</div>
   <h2>¿EN QUÉ TE <span style="color:var(--cyan)">AYUDO?</span></h2>
   <p class="sec-sub">Cada servicio respaldado por formación real y proyectos construidos.</p>
   <div class="srv-grid">
-    <div class="srv-card reveal"><div class="srv-icon">🛡️</div><div class="srv-title">Auditoría de Ciberseguridad</div><div><span class="chip">Nmap</span><span class="chip">Shodan</span><span class="chip">ZAProxy</span><span class="chip">CVE</span></div><p class="srv-desc" style="margin-top:10px;">Escaneo de vulnerabilidades, análisis de red y reporte ejecutivo PDF con plan de remediación.</p><div class="srv-price">Desde $50</div></div>
-    <div class="srv-card reveal"><div class="srv-icon">🤖</div><div class="srv-title">Robótica & IoT a Medida</div><div><span class="chip">Arduino</span><span class="chip">Raspberry Pi</span><span class="chip">ESP8266</span></div><p class="srv-desc" style="margin-top:10px;">Construcción de robots, sensores, domótica y sistemas embebidos. Hardware + software completo.</p><div class="srv-price">Desde $80</div></div>
-    <div class="srv-card reveal"><div class="srv-icon">🌐</div><div class="srv-title">Redes Cisco / CCNA</div><div><span class="chip">Routers</span><span class="chip">Switches</span><span class="chip">VLAN</span><span class="chip">VPN</span></div><p class="srv-desc" style="margin-top:10px;">Configuración de infraestructura Cisco, cableado estructurado y fibra óptica.</p><div class="srv-price">Desde $35</div></div>
-    <div class="srv-card reveal"><div class="srv-icon">📡</div><div class="srv-title">VoIP & Telefonía IP</div><div><span class="chip">Asterisk</span><span class="chip">FreePBX</span><span class="chip">SIP</span></div><p class="srv-desc" style="margin-top:10px;">Centralitas VoIP, Asterisk y telefonía empresarial a bajo costo.</p><div class="srv-price">Desde $45</div></div>
-    <div class="srv-card reveal"><div class="srv-icon">💻</div><div class="srv-title">Desarrollo Full Stack</div><div><span class="chip">WordPress</span><span class="chip">Vue.js</span><span class="chip">Node.js</span><span class="chip">APIs REST</span></div><p class="srv-desc" style="margin-top:10px;">Sitios web, apps, APIs, dashboards y e-commerce. Del diseño al servidor.</p><div class="srv-price">Desde $30</div></div>
-    <div class="srv-card reveal"><div class="srv-icon">⚙️</div><div class="srv-title">Control & Automatización</div><div><span class="chip">PID</span><span class="chip">MATLAB</span><span class="chip">Simulink</span></div><p class="srv-desc" style="margin-top:10px;">Sistemas de control automático, controladores PID, automatización industrial.</p><div class="srv-price">Desde $60</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">🛡️</div><div class="srv-title">Auditoría de Ciberseguridad</div><div><span class="chip">Nmap</span><span class="chip">Shodan</span><span class="chip">ZAProxy</span></div><p class="srv-desc" style="margin-top:10px">Escaneo de vulnerabilidades, análisis de red y reporte ejecutivo PDF con plan de remediación.</p><div class="srv-price">Desde $50</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">🤖</div><div class="srv-title">Robótica & IoT a Medida</div><div><span class="chip">Arduino</span><span class="chip">Raspberry Pi</span><span class="chip">ESP8266</span></div><p class="srv-desc" style="margin-top:10px">Construcción de robots, sensores, domótica y sistemas embebidos. Hardware + software completo.</p><div class="srv-price">Desde $80</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">🌐</div><div class="srv-title">Redes Cisco / CCNA</div><div><span class="chip">Routers</span><span class="chip">Switches</span><span class="chip">VLAN</span><span class="chip">VPN</span></div><p class="srv-desc" style="margin-top:10px">Configuración de infraestructura Cisco, cableado estructurado y fibra óptica.</p><div class="srv-price">Desde $35</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">📡</div><div class="srv-title">VoIP & Telefonía IP</div><div><span class="chip">Asterisk</span><span class="chip">FreePBX</span><span class="chip">SIP</span></div><p class="srv-desc" style="margin-top:10px">Centralitas VoIP, Asterisk y telefonía empresarial a bajo costo.</p><div class="srv-price">Desde $45</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">💻</div><div class="srv-title">Desarrollo Full Stack</div><div><span class="chip">WordPress</span><span class="chip">Vue.js</span><span class="chip">Node.js</span><span class="chip">APIs REST</span></div><p class="srv-desc" style="margin-top:10px">Sitios web, apps, APIs, dashboards y e-commerce. Del diseño al servidor.</p><div class="srv-price">Desde $30</div></div>
+    <div class="srv-card reveal"><div class="srv-icon">⚙️</div><div class="srv-title">Control & Automatización</div><div><span class="chip">PID</span><span class="chip">MATLAB</span><span class="chip">Simulink</span></div><p class="srv-desc" style="margin-top:10px">Sistemas de control automático, controladores PID, automatización industrial.</p><div class="srv-price">Desde $60</div></div>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     PROYECTOS
-════════════════════════════════ -->
+<!-- PROYECTOS -->
 <section class="sec" id="proyectos">
   <div class="sec-tag">GitHub · 74 Repositorios</div>
   <h2>PROYECTOS <span style="color:var(--cyan)">REALES</span></h2>
   <p class="sec-sub">Código funcional en producción. No tareas, no demos — soluciones reales.</p>
   <div class="proj-grid">
-    <a href="https://github.com/Jen456/factura-electronica-rest-api-php" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#4A90E2;">● PHP</div><div class="proj-name">Factura Electrónica REST API</div><div class="proj-desc">API para generación y cancelación de CFDI. Integración con sistema de facturación electrónica empresarial.</div></a>
-    <a href="https://gist.github.com/Jen456/03c1c6e05f0938e1c5eb328c83672bca" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#3776AB;">● Python · Raspberry Pi</div><div class="proj-name">Sensor de Proximidad IoT</div><div class="proj-desc">Control de sensor ultrasónico con GPIO. Automatización física en tiempo real.</div></a>
-    <a href="https://github.com/Jen456/erpnext" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#3776AB;">● Python · ERP</div><div class="proj-name">ERPNext — Alternativa Open Source a SAP</div><div class="proj-desc">Implementación de ERP completo. Gestión empresarial, inventario y contabilidad.</div></a>
-    <a href="https://github.com/zaproxy/zaproxy" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#B07219;">● Java · Ciberseguridad</div><div class="proj-name">ZAProxy — Pentesting Web</div><div class="proj-desc">Herramienta de auditoría ZAP. Testing de vulnerabilidades en aplicaciones web.</div></a>
-    <a href="https://github.com/Jen456/WebTaquion" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#E44D26;">● HTML/CSS · Testing</div><div class="proj-name">WebTaquion</div><div class="proj-desc">Pruebas funcionales y análisis de rendimiento de sitio web. QA y validación de interfaces.</div></a>
-    <a href="https://github.com/Jen456?tab=repositories" target="_blank" class="proj-card reveal" style="border-style:dashed;display:flex;align-items:center;justify-content:center;text-align:center;min-height:140px;">
-      <div><div style="font-size:26px;margin-bottom:8px;">🐙</div><div style="color:var(--cyan);font-weight:700;font-size:15px;">+69 repositorios más</div><div style="color:var(--muted);font-size:11px;margin-top:4px;">github.com/Jen456</div></div>
+    <a href="https://github.com/Jen456/factura-electronica-rest-api-php" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#4A90E2">● PHP</div><div class="proj-name">Factura Electrónica REST API</div><div class="proj-desc">API para generación de CFDI. Integración con sistema tributario nacional (SRI).</div></a>
+    <a href="https://gist.github.com/Jen456/03c1c6e05f0938e1c5eb328c83672bca" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#3776AB">● Python · Raspberry Pi</div><div class="proj-name">Sensor de Proximidad IoT</div><div class="proj-desc">Control de sensor ultrasónico con GPIO. Automatización física en tiempo real.</div></a>
+    <a href="https://github.com/Jen456/erpnext" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#3776AB">● Python · ERP</div><div class="proj-name">ERPNext — Alternativa SAP</div><div class="proj-desc">ERP open-source completo: inventario, contabilidad, RRHH y gestión empresarial.</div></a>
+    <a href="https://github.com/zaproxy/zaproxy" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#B07219">● Java · Ciberseguridad</div><div class="proj-name">ZAProxy — Pentesting Web</div><div class="proj-desc">Auditoría de vulnerabilidades en aplicaciones web. Herramienta OWASP.</div></a>
+    <a href="https://github.com/Jen456/WebTaquion" target="_blank" class="proj-card reveal"><div class="proj-lang" style="color:#E44D26">● HTML/CSS · Testing</div><div class="proj-name">WebTaquion</div><div class="proj-desc">Pruebas funcionales y análisis de rendimiento web. QA y validación.</div></a>
+    <a href="https://github.com/Jen456?tab=repositories" target="_blank" class="proj-card reveal" style="border-style:dashed;display:flex;align-items:center;justify-content:center;text-align:center;min-height:130px;">
+      <div><div style="font-size:28px;margin-bottom:8px">🐙</div><div style="color:var(--cyan);font-weight:700;font-size:15px">+69 repositorios más</div><div style="color:var(--muted);font-size:11px;margin-top:4px">github.com/Jen456</div></div>
     </a>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     ESPOL
-════════════════════════════════ -->
+<!-- ESPOL -->
 <section class="sec" id="formacion">
   <div class="sec-tag">Formación ESPOL · 2012–2017</div>
   <h2>5 AÑOS DE INGENIERÍA<br><span style="color:var(--cyan)">= PROYECTOS REALES</span></h2>
   <p class="sec-sub">Cada materia de la malla curricular de la ESPOL produjo proyectos concretos.</p>
   <div class="espol-areas">
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">⚡</span><div><div class="area-title">Electrónica Analógica & Redes Eléctricas</div><div class="area-courses">Análisis de Redes I & II · Electrónica I, II & III</div></div></div><div class="area-projects"><div class="aproj">🔌 Diseño y simulación de circuitos con SPICE/Multisim</div><div class="aproj">⚡ Fuentes de alimentación reguladas lineales y switching</div><div class="aproj">📡 Amplificadores operacionales para instrumentación</div><div class="aproj">🖨️ Diseño de PCB con Eagle / KiCad</div></div></div>
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🖥️</span><div><div class="area-title">Sistemas Digitales & FPGA</div><div class="area-courses">Sistemas Digitales I & II · VHDL/Verilog</div></div></div><div class="area-projects"><div class="aproj">🧮 ALU implementada en FPGA</div><div class="aproj">🚦 Semáforo inteligente con lógica secuencial</div><div class="aproj">🔗 Comunicaciones seriales: UART, SPI, I2C</div><div class="aproj">🧠 CPU básico diseñado desde cero en VHDL</div></div></div>
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🤖</span><div><div class="area-title">Control Automático & Robótica</div><div class="area-courses">Control Automático · MATLAB/Simulink</div></div></div><div class="area-projects"><div class="aproj">🌡️ Controlador PID de temperatura con retroalimentación</div><div class="aproj">🦾 Brazo robótico con control de trayectoria</div><div class="aproj">💧 Sistema automático de control de nivel</div><div class="aproj">📊 Simulación de sistemas dinámicos en MATLAB</div></div></div>
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🔬</span><div><div class="area-title">Microcontroladores & Sistemas Embebidos</div><div class="area-courses">Microcontroladores · Arduino · ESP8266</div></div></div><div class="area-projects"><div class="aproj">🌿 Sistema de riego automático con sensores</div><div class="aproj">🤖 Robot seguidor de línea con IR</div><div class="aproj">🔑 Control de acceso por RFID</div><div class="aproj">🌡️ Estación meteorológica IoT</div></div></div>
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">📡</span><div><div class="area-title">Comunicaciones & Telecomunicaciones</div><div class="area-courses">Comunicaciones Analógicas · Digitales · Lab Telecom</div></div></div><div class="area-projects"><div class="aproj">📻 Modulador/demodulador AM y FM en hardware</div><div class="aproj">📶 Implementación de BPSK, QPSK y QAM</div><div class="aproj">🔭 Diseño de antenas dipolo con cálculo de ganancia</div><div class="aproj">🔗 Enlace de fibra óptica con cálculo de pérdidas (CFOT)</div></div></div>
-    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🌐</span><div><div class="area-title">Redes de Datos & Infraestructura</div><div class="area-courses">Redes de Datos · CCNA 1·2·3 · Cableado Estructurado</div></div></div><div class="area-projects"><div class="aproj">🏢 Diseño de red corporativa en Cisco Packet Tracer</div><div class="aproj">🔌 Cableado estructurado Cat5e/Cat6 certificado</div><div class="aproj">☎️ Servidor VoIP con Asterisk y extensiones SIP</div><div class="aproj">🛡️ VLANs, VPN y routing OSPF/EIGRP</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">⚡</span><div><div class="area-title">Electrónica Analógica & Redes</div><div class="area-courses">Análisis de Redes I & II · Electrónica I, II & III</div></div></div><div class="area-projects"><div class="aproj">🔌 Diseño y simulación con SPICE/Multisim</div><div class="aproj">⚡ Fuentes de alimentación switching</div><div class="aproj">📡 Amplificadores operacionales</div><div class="aproj">🖨️ Diseño de PCB con Eagle/KiCad</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🖥️</span><div><div class="area-title">Sistemas Digitales & FPGA</div><div class="area-courses">Sistemas Digitales I & II · VHDL/Verilog</div></div></div><div class="area-projects"><div class="aproj">🧮 ALU implementada en FPGA</div><div class="aproj">🚦 Semáforo inteligente con FSM</div><div class="aproj">🔗 UART, SPI, I2C en hardware</div><div class="aproj">🧠 CPU básico en VHDL desde cero</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🤖</span><div><div class="area-title">Control Automático & Robótica</div><div class="area-courses">Control Automático · MATLAB/Simulink</div></div></div><div class="area-projects"><div class="aproj">🌡️ Controlador PID de temperatura</div><div class="aproj">🦾 Brazo robótico con trayectoria</div><div class="aproj">💧 Control automático de nivel</div><div class="aproj">📊 Simulación en MATLAB/Simulink</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🔬</span><div><div class="area-title">Microcontroladores & Embebidos</div><div class="area-courses">Microcontroladores · Arduino · ESP8266</div></div></div><div class="area-projects"><div class="aproj">🌿 Riego automático inteligente</div><div class="aproj">🤖 Robot seguidor de línea IR</div><div class="aproj">🔑 Control de acceso RFID</div><div class="aproj">🌡️ Estación meteorológica IoT</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">📡</span><div><div class="area-title">Comunicaciones & Telecom</div><div class="area-courses">Comunicaciones Analógicas · Digitales · RF</div></div></div><div class="area-projects"><div class="aproj">📻 Modulador/demodulador AM y FM</div><div class="aproj">📶 BPSK, QPSK y QAM en software</div><div class="aproj">🔭 Diseño de antenas dipolo</div><div class="aproj">🔗 Fibra óptica con cálculo pérdidas</div></div></div>
+    <div class="espol-area reveal"><div class="area-header"><span class="area-icon">🌐</span><div><div class="area-title">Redes de Datos & Cisco</div><div class="area-courses">CCNA 1·2·3 · Cableado Estructurado</div></div></div><div class="area-projects"><div class="aproj">🏢 Red corporativa en Packet Tracer</div><div class="aproj">🔌 Cableado Cat5e/Cat6 certificado</div><div class="aproj">☎️ VoIP Asterisk con extensiones SIP</div><div class="aproj">🛡️ VLANs, VPN, OSPF/EIGRP</div></div></div>
   </div>
   <div class="espol-footer reveal">
     <div class="espol-badge-big">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#000;letter-spacing:2px;">ESPOL</div>
-      <div style="font-size:10px;color:rgba(0,0,0,.75);font-weight:700;">POLITÉCNICA DEL LITORAL</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#000;letter-spacing:2px">ESPOL</div>
+      <div style="font-size:10px;color:rgba(0,0,0,.75);font-weight:700">POLITÉCNICA DEL LITORAL</div>
     </div>
     <div>
-      <div style="font-size:17px;font-weight:700;margin-bottom:6px;">Ingeniería en Electrónica y Telecomunicaciones</div>
-      <div style="color:var(--muted);font-size:13px;line-height:1.8;">
-        Campus Gustavo Galindo Velasco · Guayaquil, Ecuador · Graduada 2017<br>
-        10 semestres · Matemáticas · Física · Electrónica · Telecomunicaciones · Redes<br>
-        <span style="color:var(--cyan);">Base científica sólida que respalda cada proyecto.</span>
-      </div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:6px">Ingeniería en Electrónica y Telecomunicaciones</div>
+      <div style="color:var(--muted);font-size:13px;line-height:1.8">Campus Gustavo Galindo Velasco · Guayaquil, Ecuador · Graduada 2017<br>10 semestres · Electrónica · Telecomunicaciones · Control · Redes<br><span style="color:var(--cyan)">Base científica sólida que respalda cada proyecto.</span></div>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     SOBRE MÍ
-════════════════════════════════ -->
+<!-- SOBRE MÍ -->
 <section class="sec" id="sobre-mi">
   <div class="about-grid">
-    <div style="position:relative;" class="reveal">
-      <div class="about-photo">
-        <img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.style.background='#0A1C3E';this.style.height='460px';">
-      </div>
+    <div style="position:relative" class="reveal">
+      <div class="about-photo"><img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.style.background='#0A1C3E';this.style.minHeight='400px';this.style.display='block'"></div>
       <div class="exp-box"><div class="exp-num">13</div><div class="exp-label">Años de<br>Experiencia</div></div>
     </div>
     <div>
       <div class="sec-tag">Sobre Mí</div>
       <h2>CIENTÍFICA.<br>INVENTORA.<br><span style="color:var(--cyan)">INGENIERA.</span></h2>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:24px;">Jenny Julizza Álava Bolaños. Construyo robots, configuro redes, audito sistemas y desarrollo software. Fundadora de <strong style="color:var(--text)">SUPRO Agency</strong> y <strong style="color:var(--text)">SuproHosting</strong>. Conferencista en CORPCITI. Investigadora en CIDIS-ESPOL.</p>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:24px">Jenny Julizza Álava Bolaños. Fundadora de <strong style="color:var(--text)">SUPRO Agency</strong> y <strong style="color:var(--text)">SuproHosting</strong>. Conferencista en CORPCITI. Investigadora en CIDIS-ESPOL.</p>
       <div>
-        <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2021–Hoy</div><div class="tl-content"><h4>Fundadora — SuproHosting & SUPRO Agency</h4><p>Hosting, marketing digital, domótica, desarrollo web</p></div></div>
+        <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2021–Hoy</div><div class="tl-content"><h4>Fundadora — SuproHosting & SUPRO Agency</h4><p>Hosting cloud, marketing digital, domótica, web</p></div></div>
         <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2021–2022</div><div class="tl-content"><h4>Full Stack Developer — FUNIBER</h4><p>APIs, automatización de documentos académicos</p></div></div>
         <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2017–2021</div><div class="tl-content"><h4>Gerente de Proyecto — ZEDIMAX S.A.</h4><p>Telecomunicaciones, CCTV, redes, VoIP</p></div></div>
         <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2017–2020</div><div class="tl-content"><h4>Investigadora — CIDIS ESPOL</h4><p>Proyectos tecnológicos, IoT, electrónica</p></div></div>
@@ -606,9 +543,7 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     CERTIFICACIONES
-════════════════════════════════ -->
+<!-- CERTIFICACIONES -->
 <section class="sec">
   <div class="sec-tag">Certificaciones</div>
   <h2>CREDENCIALES <span style="color:var(--cyan)">VERIFICADAS</span></h2>
@@ -619,292 +554,386 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
     <div class="cert-card reveal"><div class="cert-icon">🟢</div><div class="cert-name">Cableado Estructurado</div><div class="cert-issuer">ESPOL</div></div>
     <div class="cert-card reveal"><div class="cert-icon">⚡</div><div class="cert-name">AutoCAD Eléctrico</div><div class="cert-issuer">IEEE ESPOL</div></div>
     <div class="cert-card reveal"><div class="cert-icon">📞</div><div class="cert-name">VoIP Administration</div><div class="cert-issuer">Soluciones Wandonline</div></div>
-    <div class="cert-card reveal"><div class="cert-icon">🛡️</div><div class="cert-name">MSc Ciberseguridad</div><div class="cert-issuer">UIDE · En curso</div></div>
-    <div class="cert-card reveal"><div class="cert-icon">🎓</div><div class="cert-name">Ing. Electrónica & Telecom.</div><div class="cert-issuer">ESPOL · 2017</div></div>
+    <div class="cert-card reveal"><div class="cert-icon">🛡️</div><div class="cert-name">MSc Ciberseguridad</div><div class="cert-issuer">UIDE · En curso 2026</div></div>
+    <div class="cert-card reveal"><div class="cert-icon">🎓</div><div class="cert-name">Ing. Electrónica & Telecom</div><div class="cert-issuer">ESPOL · 2017</div></div>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     PRECIOS
-════════════════════════════════ -->
+<!-- PRECIOS -->
 <section class="sec">
   <div class="sec-tag">Precios</div>
   <h2>INVERSIÓN <span style="color:var(--cyan)">CLARA</span></h2>
   <p class="sec-sub">Sin sorpresas. Todo respaldado por formación real.</p>
   <div class="price-grid">
-    <div class="price-card reveal"><div class="price-tier">Básico</div><div class="price-amt"><span>$</span>25</div><div class="price-srv">Soporte Técnico Remoto</div><ul class="price-feats"><li>Diagnóstico de red</li><li>Config básica</li><li>Reporte de estado</li><li>Entrega en 24h</li></ul><a href="#contacto" class="btn-o" style="display:block;text-align:center;">Contratar</a></div>
-    <div class="price-card feat reveal"><div class="price-tier">Profesional</div><div class="price-amt"><span>$</span>80</div><div class="price-srv">Auditoría de Red Completa</div><ul class="price-feats"><li>Escaneo de vulnerabilidades</li><li>Reporte PDF ejecutivo</li><li>Plan de remediación</li><li>Soporte 7 días</li></ul><a href="#contacto" class="btn-p" style="display:block;text-align:center;">Contratar</a></div>
-    <div class="price-card reveal"><div class="price-tier">Enterprise</div><div class="price-amt"><span>$</span>200+</div><div class="price-srv">Proyecto Personalizado</div><ul class="price-feats"><li>Robótica / IoT completo</li><li>Infraestructura de red</li><li>Full stack web/app</li><li>Según alcance</li></ul><a href="#contacto" class="btn-o" style="display:block;text-align:center;">Consultar</a></div>
+    <div class="price-card reveal"><div class="price-tier">Básico</div><div class="price-amt"><span>$</span>25</div><div class="price-srv">Soporte Técnico Remoto</div><ul class="price-feats"><li>Diagnóstico de red</li><li>Config básica</li><li>Reporte de estado</li><li>Entrega en 24h</li></ul><a href="#contacto" class="btn-o" style="display:block;text-align:center">Contratar</a></div>
+    <div class="price-card feat reveal"><div class="price-tier">Profesional</div><div class="price-amt"><span>$</span>80</div><div class="price-srv">Auditoría de Red Completa</div><ul class="price-feats"><li>Escaneo de vulnerabilidades</li><li>Reporte PDF ejecutivo</li><li>Plan de remediación</li><li>Soporte 7 días</li></ul><a href="#contacto" class="btn-p" style="display:block;text-align:center">Contratar</a></div>
+    <div class="price-card reveal"><div class="price-tier">Enterprise</div><div class="price-amt"><span>$</span>200+</div><div class="price-srv">Proyecto Personalizado</div><ul class="price-feats"><li>Robótica / IoT completo</li><li>Infraestructura de red</li><li>Full stack web/app</li><li>Según alcance</li></ul><a href="#contacto" class="btn-o" style="display:block;text-align:center">Consultar</a></div>
   </div>
 </section>
 
-<!-- ════════════════════════════════
-     CONTACTO
-════════════════════════════════ -->
+<!-- CONTACTO -->
 <div class="contact-wrap" id="contacto">
-  <div style="max-width:680px;margin:auto;">
-    <div class="sec-tag" style="justify-content:center;">Contacto</div>
+  <div style="max-width:680px;margin:auto">
+    <div class="sec-tag" style="justify-content:center">Contacto</div>
     <h2>¿TIENES UN PROYECTO?<br><span style="color:var(--cyan)">HABLEMOS.</span></h2>
-    <p style="color:var(--muted);font-size:15px;line-height:1.65;">Respondo en menos de 24 horas. Ecuador y todo el mundo vía remoto.</p>
+    <p style="color:var(--muted);font-size:15px;line-height:1.65">Respondo en menos de 24 horas. Ecuador y todo el mundo vía remoto.</p>
     <div class="contact-links">
       <a href="https://wa.me/593968279747" target="_blank" class="clink"><span>💬</span><div><strong>WhatsApp</strong><br><small style="color:var(--muted)">+593 968 279 747</small></div></a>
       <a href="mailto:ventas@suprohosting.com" class="clink"><span>✉️</span><div><strong>Email</strong><br><small style="color:var(--muted)">ventas@suprohosting.com</small></div></a>
       <a href="https://www.linkedin.com/in/jenny-alava" target="_blank" class="clink"><span>💼</span><div><strong>LinkedIn</strong><br><small style="color:var(--muted)">jenny-alava</small></div></a>
-      <a href="https://github.com/Jen456" target="_blank" class="clink"><span>🐙</span><div><strong>GitHub</strong><br><small style="color:var(--muted)">74 repositorios</small></div></a>
+      <a href="https://github.com/Jen456" target="_blank" class="clink"><span>🐙</span><div><strong>GitHub</strong><br><small style="color:var(--muted)">74 repos</small></div></a>
     </div>
   </div>
 </div>
 
 <footer>
   <div>© 2026 <strong>Ing. Jenny J. Álava Bolaños</strong> · SUPRO Performance Agency · SuproHosting</div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,255,.35);">jen456.github.io · RUC: 0993212164001</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,255,.3)">jen456.github.io · RUC: 0993212164001</div>
 </footer>
 
-<!-- ════════════════════════════════
-     CHAT WIDGET  (CORRECTO: antes de </body>)
-════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════
+     CHAT WIDGET
+═══════════════════════════════════════════════════ -->
 <div id="jc-root">
   <button class="jc-bubble" id="jcBtn" aria-label="Chat con Jenny AI">
-    <div class="jc-notif" id="jcN"></div>
-    <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <div class="jc-notif" id="jcN">1</div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   </button>
+
   <div class="jc-win" id="jcWin">
+    <!-- Header -->
     <div class="jc-hdr">
       <div class="jc-av">JA</div>
-      <div>
+      <div class="jc-hinfo">
         <div class="jc-hname">Jenny Álava · Asistente IA</div>
-        <div class="jc-hst"><span class="jc-dot"></span>Activo ahora</div>
+        <div class="jc-hst"><span class="jc-dot"></span>Activo ahora · responde al instante</div>
       </div>
-      <button class="jc-cls" id="jcCls">✕</button>
+      <div class="jc-hbadge" id="jcBadge">IA</div>
+      <button class="jc-cls" id="jcCls" aria-label="Cerrar chat">✕</button>
     </div>
+
+    <!-- Status bar -->
+    <div class="jc-status ai" id="jcStatus">✦ Gemini AI activo — conversación inteligente</div>
+
+    <!-- Mensajes -->
     <div class="jc-msgs" id="jcMsgs"></div>
+
+    <!-- Quick replies -->
     <div class="jc-qr" id="jcQR">
-      <button class="jc-q" data-q="¿Qué servicios ofreces?">🛠 Servicios</button>
-      <button class="jc-q" data-q="¿Cuánto cobras?">💰 Precios</button>
+      <div class="jc-qr-label">SUGERENCIAS</div>
+      <button class="jc-q" data-q="¿Qué servicios ofreces y cuánto cobras?">💰 Servicios y precios</button>
       <button class="jc-q" data-q="¿Cuál es tu experiencia en ciberseguridad?">🛡 Ciberseguridad</button>
-      <button class="jc-q" data-q="Quiero contratarte">📩 Contratar</button>
+      <button class="jc-q" data-q="Quiero contratarte para un proyecto">📩 Contratar</button>
+      <button class="jc-q" data-q="¿Haces proyectos de robótica e IoT?">🤖 Robótica & IoT</button>
     </div>
+
+    <!-- Input -->
     <div class="jc-irow">
-      <textarea class="jc-inp" id="jcInp" placeholder="Escríbeme algo..." rows="1"></textarea>
-      <button class="jc-send" id="jcSend">
+      <textarea class="jc-inp" id="jcInp" placeholder="Escríbeme algo..." rows="1" aria-label="Mensaje"></textarea>
+      <button class="jc-send" id="jcSend" aria-label="Enviar">
         <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
       </button>
     </div>
-    <div class="jc-foot">Asistente de Jenny Álava · SuproHosting</div>
+    <div class="jc-chat-foot">Powered by Google Gemini · Jenny AI · SuproHosting</div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
+<!-- ═══════════════════════════════════════════════════
      SCRIPTS
-════════════════════════════════ -->
+═══════════════════════════════════════════════════ -->
 <script>
-/* ── CURSOR ── */
-const cur=document.getElementById('cur'),curR=document.getElementById('curR');
-let mx=0,my=0,rx=0,ry=0;
-if(cur){
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    cur.style.transform=`translate(${mx-5}px,${my-5}px)`;
-  });
-  (function loop(){
-    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
-    curR.style.transform=`translate(${rx-18}px,${ry-18}px)`;
-    requestAnimationFrame(loop);
-  })();
-}
-
-/* ── HAMBURGER ── */
-const navBtn=document.getElementById('navBtn');
-const navMob=document.getElementById('navMobile');
-navBtn.addEventListener('click',()=>{
-  navBtn.classList.toggle('open');
-  navMob.classList.toggle('open');
-  document.body.classList.toggle('nav-open');
-});
-document.querySelectorAll('.nav-mobile-link').forEach(a=>{
-  a.addEventListener('click',()=>{
-    navBtn.classList.remove('open');
-    navMob.classList.remove('open');
-    document.body.classList.remove('nav-open');
-  });
-});
-
-/* ── SCROLL REVEAL ── */
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
-},{threshold:.07});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-/* ════════════════════════════════════════
-   CHATBOT — Smart Rule-Based AI
-   Sin backend · Sin API key · 100% funcional
-════════════════════════════════════════ */
+/* ══ Cursor ══ */
 (function(){
-  const KB=[
-    {
-      k:['hola','hello','hi','buenas','hey','buenos','good','saludo','inicio'],
-      r:['¡Hola! 👋 Soy el asistente de **Jenny Álava**, ingeniera en Electrónica, Telecomunicaciones y Ciberseguridad.\n\n¿En qué puedo ayudarte hoy?',
-         '¡Buenas! 😊 Estoy aquí para contarte todo sobre los servicios y experiencia de Jenny. ¿Qué necesitas?']
-    },
-    {
-      k:['servicios','service','ofreces','haces','ayuda','puedes hacer','trabajo','trabajos'],
-      r:['Jenny ofrece estos servicios principales:\n\n🛡️ **Auditoría de Ciberseguridad** — desde $50\n🤖 **Robótica & IoT** — desde $80\n🌐 **Redes Cisco/CCNA** — desde $35\n📡 **VoIP & Telefonía IP** — desde $45\n💻 **Desarrollo Full Stack** — desde $30\n⚙️ **Automatización & Control** — desde $60\n\n¿Te interesa alguno en particular?']
-    },
-    {
-      k:['precio','costo','cobras','cuanto','tarifa','rate','cost','presupuesto','budget','pago'],
-      r:['💰 **Tarifas de Jenny:**\n\n• Soporte técnico remoto → desde **$25**\n• Desarrollo web / APIs → desde **$30**\n• Redes Cisco / CCNA → desde **$35**\n• VoIP / Asterisk → desde **$45**\n• Auditoría de seguridad → desde **$50**\n• Robótica / IoT → desde **$80**\n• Proyectos enterprise → desde **$200**\n\n¿Tienes un proyecto específico? Te puede dar una cotización personalizada. 📩']
-    },
-    {
-      k:['ciberseguridad','cyber','seguridad','hacking','pentest','vulnerabilidad','hack','audit'],
-      r:['🛡️ Jenny tiene formación especializada en Ciberseguridad:\n\n• **MSc en Ciberseguridad** (UIDE, en curso)\n• Pentesting con Nmap, ZAProxy, Shodan, Kali Linux\n• Análisis de vulnerabilidades y CVE\n• Honeypots y técnicas defensivas\n• Hardening de servidores Linux\n• WAF, SSL, firewalls\n\nPuede realizar auditorías de red completas con reporte ejecutivo PDF. 📄']
-    },
-    {
-      k:['contacto','contact','whatsapp','email','correo','telegram','escribir','hablar','comunicar'],
-      r:['📬 **Contacta a Jenny directamente:**\n\n💬 WhatsApp: **+593 968 279 747**\n✉️ Email: **ventas@suprohosting.com**\n💼 LinkedIn: linkedin.com/in/jenny-alava\n🐙 GitHub: github.com/Jen456\n🌐 Web: suprohosting.com\n\nResponde en menos de 24 horas. ¡También trabaja remotamente con clientes internacionales! 🌍']
-    },
-    {
-      k:['contratar','hire','proyecto','quote','cotizacion','cotización','work with','trabajar'],
-      r:['¡Perfecto! Para contratar a Jenny:\n\n1. 💬 Escríbele por **WhatsApp**: +593 968 279 747\n2. ✉️ O por email: ventas@suprohosting.com\n3. Cuéntale tu proyecto (qué necesitas, plazos, presupuesto)\n4. Ella te envía propuesta en 24h\n\nTrabaja con clientes en Ecuador y todo el mundo de forma remota. 🌍']
-    },
-    {
-      k:['redes','cisco','ccna','router','switch','networking','network','lan','wan','vlan','vpn'],
-      r:['🌐 En redes, Jenny tiene:\n\n• **CCNA 1, 2 y 3** (triple certificada Cisco)\n• Diseño de infraestructura LAN/WAN/WLAN\n• Configuración de routers y switches Cisco\n• VLANs, VPN, OSPF, EIGRP\n• Cableado estructurado Cat5e/Cat6\n• **CFOT** — Certified Fiber Optic Technician 🔶\n\nIdeal para empresas que necesitan configurar o expandir su red corporativa.']
-    },
-    {
-      k:['web','website','app','aplicacion','desarrollo','full stack','frontend','backend','php','vue','node','laravel','wordpress'],
-      r:['💻 En desarrollo, Jenny trabaja con:\n\n• **Frontend**: Vue.js, HTML5, CSS3, Bootstrap, JavaScript\n• **Backend**: PHP, Laravel, Node.js, Python/Django\n• **APIs REST** y integraciones de terceros\n• **WordPress** y e-commerce\n• Bases de datos: MySQL, PostgreSQL, SQL Server\n• **Hosting** en SuproHosting.com (VPS, servidores dedicados)\n\n¿Tienes una idea de proyecto web?']
-    },
-    {
-      k:['iot','arduino','robot','robotica','raspberry','domótica','domotica','automatizacion','embebido','hardware'],
-      r:['🤖 En IoT y Robótica, Jenny construye:\n\n• Robots personalizados (seguimiento de línea, brazo robótico, etc.)\n• Estaciones meteorológicas IoT\n• Sistemas de domótica (luces, temperatura, seguridad)\n• Control con Arduino, Raspberry Pi, ESP8266\n• Sensores ultrasónicos, RFID, infrarrojo\n• Sistemas de riego automático\n\n¡Todo con hardware + software completo! 🔬']
-    },
-    {
-      k:['voip','asterisk','telefonia','telefónia','pbx','sip','central','centralita'],
-      r:['📡 Jenny implementa sistemas VoIP profesionales:\n\n• Instalación de **Asterisk** / FreePBX\n• Extensiones SIP internas\n• Troncales VoIP para llamadas externas\n• Reducción de costos telefónicos hasta 70%\n• Integración con redes LAN existentes\n• **Certificada en VoIP Administration** ✅\n\nDesde $45. ¿Cuántas extensiones necesitas?']
-    },
-    {
-      k:['espol','universidad','titulacion','título','ingenieria','electronica','telecomunicaciones','formacion','educacion','estudio'],
-      r:['🎓 Jenny estudió en la **ESPOL** (Escuela Superior Politécnica del Litoral), una de las mejores universidades técnicas de Latinoamérica.\n\n• Ingeniería en Electrónica y Telecomunicaciones (2012–2017)\n• 10 semestres de matemáticas, física, electrónica, redes y telecom\n• Investigadora en **CIDIS-ESPOL** (2017–2020)\n• MSc en Ciberseguridad en la **UIDE** (en curso 2025–2026)']
-    },
-    {
-      k:['experiencia','años','trayectoria','experience','background','historial','cv','curriculum'],
-      r:['📋 Jenny tiene **13+ años de experiencia**:\n\n🏢 **Fundadora** — SuproHosting & SUPRO Agency (2018–hoy)\n💻 **Full Stack Dev** — FUNIBER (2021–2022)\n🔧 **Gerente de Proyecto** — ZEDIMAX S.A. (2017–2021)\n🔬 **Investigadora** — CIDIS ESPOL (2017–2020)\n📡 **Técnico Telecom** — ZEDIMAX (2015–2016)\n🎤 **Conferencista** — CORPCITI (2016–2020)\n\n74 repositorios en GitHub. ¡Pide su CV si lo necesitas!']
-    },
-    {
-      k:['hosting','server','servidor','suprohosting','vps','cloud','alojamiento','dominio'],
-      r:['☁️ **SuproHosting** (suprohosting.com) ofrece:\n\n• Hosting compartido para sitios web\n• **VPS** (Servidores Privados Virtuales)\n• Servidores dedicados\n• Dominios registrados\n• SSL, backups automáticos, Cloudflare\n• Soporte técnico incluido\n• Panel WHM/cPanel\n\nIdeal para empresas y proyectos que necesitan rendimiento y seguridad. 🔒']
-    },
-    {
-      k:['idioma','idiomas','ingles','inglés','ruso','japanese','japonés','language','habla'],
-      r:['🌍 Jenny habla:\n\n🇪🇸 **Español** — Nativo\n🇬🇧 **Inglés** — Profesional\n🇷🇺 **Ruso** — Full Professional\n🇯🇵 **Japonés** — Básico\n\n¡Trabaja con clientes internacionales sin problema! 🌐']
-    },
-    {
-      k:['github','repositorio','codigo','código','open source','proyecto','repo'],
-      r:['🐙 Jenny tiene **74 repositorios** en GitHub (github.com/Jen456):\n\n• Factura Electrónica REST API (PHP)\n• Sensor de Proximidad IoT (Python/Raspberry Pi)\n• ERPNext — alternativa open source a SAP\n• ZAProxy — pentesting web\n• WebTaquion — análisis web/QA\n• ...y mucho más\n\n¡Échale un vistazo a su portafolio!']
-    },
-    {
-      k:['gracias','thanks','thank you','ok','perfecto','genial','excelente','bien'],
-      r:['¡De nada! 😊 Si necesitas algo más, aquí estoy.\n\nPuedes contactar a Jenny directamente por WhatsApp: **+593 968 279 747** 💬',
-         '¡Con gusto! Recuerda que Jenny trabaja remoto con clientes de todo el mundo. ¿Algo más en lo que te pueda ayudar? 🌟']
-    }
+  const c=document.getElementById('cur'),r=document.getElementById('curR');
+  if(!c||!window.matchMedia('(pointer:fine)').matches)return;
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c.style.transform=`translate(${mx-5}px,${my-5}px)`;});
+  (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;r.style.transform=`translate(${rx-18}px,${ry-18}px)`;requestAnimationFrame(loop);})();
+})();
+
+/* ══ Hamburger ══ */
+(function(){
+  const btn=document.getElementById('navBtn'),mob=document.getElementById('navMobile');
+  btn.addEventListener('click',()=>{btn.classList.toggle('open');mob.classList.toggle('open');document.body.classList.toggle('nav-open');});
+  document.querySelectorAll('.nav-ml').forEach(a=>a.addEventListener('click',()=>{btn.classList.remove('open');mob.classList.remove('open');document.body.classList.remove('nav-open');}));
+})();
+
+/* ══ Reveal ══ */
+(function(){
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.07});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+})();
+
+/* ══════════════════════════════════════════════════
+   CHATBOT — Google Gemini API + fallback inteligente
+   CDN: marked.min.js + dompurify (cargados en <head>)
+══════════════════════════════════════════════════ */
+(function(){
+
+  /* ─────────────────────────────────────────
+     CONFIGURACIÓN
+     Obtén tu API KEY gratuita en:
+     https://aistudio.google.com/app/apikey
+     Es completamente gratis (Gemini 1.5 Flash)
+  ───────────────────────────────────────── */
+  const GEMINI_KEY = 'AIzaSyD-REEMPLAZA-CON-TU-API-KEY-AQUI';
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
+
+  const SYSTEM_PROMPT = `Eres el asistente virtual de Ing. Jenny Julizza Álava Bolaños, ingeniera ecuatoriana experta en electrónica, telecomunicaciones, ciberseguridad, IoT, robótica y desarrollo full stack. Estás en su sitio web personal jen456.github.io.
+
+SOBRE JENNY:
+- 13+ años de experiencia
+- Ingeniera en Electrónica y Telecomunicaciones - ESPOL (2012-2017)
+- MSc en Ciberseguridad en curso - UIDE (2025-2026)  
+- CEO & CTO de SuproHosting (suprohosting.com) - cloud hosting, VPS, seguridad web
+- Directora de SUPRO Performance Agency - marketing digital
+- Certificaciones: CCNA 1/2/3, CFOT (Fiber Optic), AutoCAD Eléctrico, VoIP, IT Essentials
+- Idiomas: Español (nativo), Inglés (profesional), Ruso (full professional), Japonés (básico)
+- GitHub: github.com/Jen456 (74+ repositorios)
+- Contacto: jjalava456@hotmail.com | ventas@suprohosting.com | WhatsApp: +593 968 279 747
+- LinkedIn: linkedin.com/in/jenny-alava
+
+SERVICIOS Y PRECIOS:
+- Soporte técnico remoto: desde $25
+- Desarrollo web/APIs/Full Stack: desde $30
+- Redes Cisco/CCNA/infraestructura: desde $35
+- VoIP/Asterisk/telefonía IP: desde $45
+- Auditoría de ciberseguridad: desde $50
+- Robótica/IoT/hardware: desde $80
+- Proyectos enterprise personalizados: desde $200
+
+STACK TÉCNICO:
+- Backend: Python, PHP/Laravel, Node.js, Django
+- Frontend: Vue.js, HTML5, CSS3, Bootstrap, JavaScript
+- Hardware/IoT: Arduino, Raspberry Pi, ESP8266, FPGA
+- Redes: Cisco CCNA, TCP/IP, LAN/WAN, VoIP/SIP, fibra óptica
+- Ciberseguridad: Nmap, ZAProxy, Shodan, Kali Linux, pentesting, honeypots
+- Cloud: AWS, Azure, WHM/cPanel, Cloudflare, Linux
+- BD: MySQL, PostgreSQL, SQL Server
+
+INSTRUCCIONES:
+- Responde siempre en el mismo idioma del usuario (español o inglés principalmente)
+- Sé conciso, amable y profesional
+- Usa formato Markdown cuando sea útil (listas, negritas) pero sin exagerar
+- Si el usuario quiere contratar o tiene consulta de negocios importante, pide que contacte por WhatsApp +593 968 279 747 o email ventas@suprohosting.com
+- Nunca inventes información que no esté aquí
+- Si no sabes algo específico, di que Jenny puede responderlo directamente`;
+
+  /* ─── Fallback local (si no hay API key) ─── */
+  const LOCAL_KB = [
+    {k:['hola','hello','hi','buenas','hey','saludos','inicio','bienvenido'],r:'¡Hola! 👋 Soy el asistente de **Jenny Álava**, ingeniera en Electrónica, Telecomunicaciones y Ciberseguridad con 13+ años de experiencia.\n\n¿En qué puedo ayudarte hoy?'},
+    {k:['servicio','ofreces','haces','puedes','trabajo','trabajas','especialidad'],r:'Jenny ofrece:\n\n🛡️ **Auditoría de Ciberseguridad** — desde $50\n🤖 **Robótica & IoT** — desde $80\n🌐 **Redes Cisco/CCNA** — desde $35\n📡 **VoIP & Telefonía IP** — desde $45\n💻 **Desarrollo Full Stack** — desde $30\n⚙️ **Automatización & Control** — desde $60\n\n¿Te interesa alguno en particular?'},
+    {k:['precio','costo','cobras','cuanto','tarifa','presupuesto','vale','cotiz'],r:'💰 **Tarifas de Jenny:**\n\n• Soporte técnico remoto → desde **$25**\n• Desarrollo web/APIs → desde **$30**\n• Redes Cisco/CCNA → desde **$35**\n• VoIP/Asterisk → desde **$45**\n• Auditoría de seguridad → desde **$50**\n• Robótica/IoT → desde **$80**\n• Proyectos enterprise → desde **$200**\n\n📩 Para cotización personalizada: **ventas@suprohosting.com**'},
+    {k:['ciberseguridad','seguridad','hacking','pentest','vulnerabilidad','hack','audit','cyber'],r:'🛡️ Experiencia en Ciberseguridad:\n\n• **MSc en Ciberseguridad** (UIDE, 2025-2026)\n• Pentesting con Nmap, ZAProxy, Shodan, Kali Linux\n• Análisis CVE y vulnerabilidades\n• Honeypots y técnicas defensivas\n• Hardening de servidores Linux\n• WAF, SSL, firewalls\n\nRealiza auditorías completas con reporte ejecutivo PDF.'},
+    {k:['contacto','whatsapp','email','correo','escribir','hablar','comunicar','llamar'],r:'📬 **Contacta a Jenny:**\n\n💬 WhatsApp: **+593 968 279 747**\n✉️ Email: **ventas@suprohosting.com**\n💼 LinkedIn: linkedin.com/in/jenny-alava\n🐙 GitHub: github.com/Jen456\n\nResponde en menos de 24 horas. ¡También trabaja remotamente! 🌍'},
+    {k:['contratar','hire','proyecto','cotizacion','cotización','contratas','trabajo remoto'],r:'¡Perfecto! Para contratar a Jenny:\n\n1. 💬 WhatsApp: **+593 968 279 747**\n2. ✉️ Email: ventas@suprohosting.com\n3. Cuéntale tu proyecto y ella envía propuesta en 24h\n\nTrabaja con clientes en Ecuador y todo el mundo de forma remota. 🌍'},
+    {k:['redes','cisco','ccna','router','switch','networking','lan','wan','vlan','vpn','red'],r:'🌐 En redes, Jenny tiene:\n\n• **CCNA 1, 2 y 3** (triple certificada Cisco)\n• Diseño LAN/WAN/WLAN corporativa\n• VLANs, VPN, OSPF, EIGRP\n• Cableado estructurado Cat5e/Cat6\n• **CFOT** — Certified Fiber Optic Technician\n\nIdeal para empresas que necesitan configurar su red.'},
+    {k:['web','website','app','desarrollo','full stack','frontend','backend','php','vue','node','laravel','wordpress'],r:'💻 Desarrollo:\n\n• **Frontend**: Vue.js, HTML5, CSS3, Bootstrap, JS\n• **Backend**: PHP, Laravel, Node.js, Python/Django\n• **APIs REST** e integraciones\n• **WordPress** y e-commerce\n• BD: MySQL, PostgreSQL, SQL Server\n• **Hosting** en SuproHosting.com\n\n¿Tienes una idea de proyecto?'},
+    {k:['iot','arduino','robot','robotica','raspberry','domotica','automatiz','embebido','hardware','sensor'],r:'🤖 En IoT y Robótica:\n\n• Robots personalizados\n• Domótica (luces, temp, seguridad)\n• Arduino, Raspberry Pi, ESP8266\n• Sensores ultrasónicos, RFID, IR\n• Estaciones meteorológicas IoT\n• Sistemas de riego automático\n\n¡Hardware + software completo! 🔬'},
+    {k:['voip','asterisk','telefonia','pbx','sip','centralita'],r:'📡 VoIP profesional:\n\n• **Asterisk** / FreePBX\n• Extensiones SIP\n• Troncales para llamadas externas\n• Ahorro hasta 70% en telefonía\n• **Certificada en VoIP Administration** ✅\n\nDesde $45. ¿Cuántas extensiones necesitas?'},
+    {k:['espol','universidad','carrera','formacion','titulo','educacion','estudio'],r:'🎓 Jenny estudió en la **ESPOL** (Escuela Superior Politécnica del Litoral):\n\n• Ingeniería en Electrónica y Telecomunicaciones (2012–2017)\n• 10 semestres: electrónica, física, redes, telecom, control\n• Investigadora **CIDIS-ESPOL** (2017–2020)\n• MSc Ciberseguridad **UIDE** (2025-2026)'},
+    {k:['hosting','server','servidor','suprohosting','vps','cloud','dominio'],r:'☁️ **SuproHosting** (suprohosting.com):\n\n• Hosting compartido\n• **VPS** (Servidores Privados Virtuales)\n• Servidores dedicados\n• SSL, backups automáticos, Cloudflare\n• WHM/cPanel\n• Soporte técnico incluido\n\nIdeal para empresas y proyectos. 🔒'},
+    {k:['idioma','ingles','ruso','japones','language','habla','espanol'],r:'🌍 Jenny habla:\n\n🇪🇸 **Español** — Nativo\n🇬🇧 **Inglés** — Profesional\n🇷🇺 **Ruso** — Full Professional\n🇯🇵 **Japonés** — Básico\n\nTrabaja con clientes internacionales sin problema! 🌐'},
+    {k:['github','repositorio','codigo','proyecto','repo','open source'],r:'🐙 **74 repositorios** en GitHub (github.com/Jen456):\n\n• Factura Electrónica REST API (PHP)\n• Sensor IoT con Raspberry Pi (Python)\n• ERPNext — alternativa open source SAP\n• ZAProxy — pentesting web\n• WebTaquion — análisis web/QA\n\n¡Échale un vistazo!'},
+    {k:['gracias','thanks','thank','ok','perfecto','genial','excelente'],r:'¡De nada! 😊 Si necesitas algo más, aquí estoy.\n\n📱 Contacta a Jenny: **+593 968 279 747** (WhatsApp)'}
   ];
 
-  const FALLBACK=[
-    '🤔 Buena pregunta. Para respuestas más específicas, te recomiendo contactar a Jenny directamente:\n\n💬 WhatsApp: **+593 968 279 747**\n✉️ ventas@suprohosting.com\n\n¿Puedo ayudarte con algo más?',
-    'No tengo esa información específica, pero Jenny puede responderte en menos de 24h.\n\n📬 Escríbele a **ventas@suprohosting.com** o al **+593 968 279 747** (WhatsApp). ¿Te interesa algún servicio en particular?',
-    'Para esa consulta puntual, te recomiendo hablar directamente con Jenny. Ella responde rápido 💬\n\n👉 WhatsApp: **+593 968 279 747**\n👉 Email: ventas@suprohosting.com'
-  ];
-
-  function match(text){
+  function localMatch(text){
     const t=text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    for(const entry of KB){
-      if(entry.k.some(k=>t.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))){
-        return entry.r[Math.floor(Math.random()*entry.r.length)];
-      }
+    for(const e of LOCAL_KB){
+      if(e.k.some(k=>t.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))){return e.r;}
     }
-    return FALLBACK[Math.floor(Math.random()*FALLBACK.length)];
+    return 'No tengo esa información específica, pero Jenny puede responderte directamente.\n\n💬 WhatsApp: **+593 968 279 747**\n✉️ ventas@suprohosting.com\n\n¿Puedo ayudarte con algo más?';
   }
 
-  /* DOM refs */
+  /* ─── Variables de estado ─── */
+  const history = []; // historial de conversación para Gemini
+  let isOpen = false, isInited = false, isBusy = false;
+  let useGemini = (GEMINI_KEY && !GEMINI_KEY.includes('REEMPLAZA'));
+
+  /* ─── DOM refs ─── */
   const btn=document.getElementById('jcBtn');
   const win=document.getElementById('jcWin');
   const cls=document.getElementById('jcCls');
-  const msgs=document.getElementById('jcMsgs');
+  const msgsEl=document.getElementById('jcMsgs');
   const inp=document.getElementById('jcInp');
-  const send=document.getElementById('jcSend');
+  const sendBtn=document.getElementById('jcSend');
   const notif=document.getElementById('jcN');
-  const qr=document.getElementById('jcQR');
-  let open=false,inited=false;
+  const qrEl=document.getElementById('jcQR');
+  const statusEl=document.getElementById('jcStatus');
+  const badgeEl=document.getElementById('jcBadge');
 
-  /* Toggle */
-  btn.addEventListener('click',()=>{
-    open=!open;
-    win.classList.toggle('open',open);
-    notif.classList.remove('on');
-    if(open&&!inited){inited=true;addBot('¡Hola! 👋 Soy el asistente de **Jenny Álava**.\n\n¿En qué puedo ayudarte hoy? Puedes preguntarme sobre servicios, precios, experiencia o cómo contactarla.');}
-    if(open)setTimeout(()=>inp.focus(),200);
-  });
-  cls.addEventListener('click',()=>{open=false;win.classList.remove('open');});
+  /* ─── Actualizar status bar ─── */
+  function updateStatus(ok){
+    useGemini = ok;
+    if(ok){
+      statusEl.className='jc-status ai';
+      statusEl.textContent='✦ Gemini AI activo — conversación inteligente';
+      badgeEl.textContent='AI';
+      badgeEl.style.color='var(--cyan)';
+      badgeEl.style.borderColor='rgba(0,200,255,.3)';
+    } else {
+      statusEl.className='jc-status local';
+      statusEl.textContent='⚡ Modo local activo — respuestas rápidas';
+      badgeEl.textContent='LOCAL';
+      badgeEl.style.color='var(--gold)';
+      badgeEl.style.borderColor='rgba(201,168,76,.3)';
+    }
+  }
+  updateStatus(useGemini);
 
-  /* Render */
-  function md(t){
-    return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  /* ─── Render markdown seguro ─── */
+  function renderMd(text){
+    if(typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined'){
+      return DOMPurify.sanitize(marked.parse(text));
+    }
+    // fallback básico si CDN falla
+    return text
+      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g,'<em>$1</em>')
+      .replace(/`(.*?)`/g,'<code>$1</code>')
+      .replace(/\n/g,'<br>');
   }
-  function addMsg(role,text){
-    const d=document.createElement('div');
-    d.className='jc-msg '+role;
-    const b=document.createElement('div');
-    b.className='jc-bub';
-    b.innerHTML=md(text);
-    d.appendChild(b);
-    msgs.appendChild(d);
-    msgs.scrollTop=msgs.scrollHeight;
-  }
-  function addBot(t){addMsg('bot',t);}
-  function addUser(t){addMsg('user',t);}
-  function typing(){
-    const d=document.createElement('div');
-    d.className='jc-msg bot';d.id='jcTyp';
-    d.innerHTML='<div class="jc-typing"><span></span><span></span><span></span></div>';
-    msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
-    return d;
-  }
-  function rmTyping(){const e=document.getElementById('jcTyp');if(e)e.remove();}
 
-  /* Send */
-  function sendMsg(text){
-    if(!text.trim())return;
+  /* ─── Añadir mensajes ─── */
+  function addMsg(role, html, isHTML=false){
+    const wrap=document.createElement('div');
+    wrap.className='jc-msg '+role;
+    const bub=document.createElement('div');
+    bub.className='jc-bub';
+    if(isHTML) bub.innerHTML=html;
+    else bub.innerHTML=renderMd(html);
+    wrap.appendChild(bub);
+    msgsEl.appendChild(wrap);
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+    return bub;
+  }
+
+  /* ─── Typing indicator ─── */
+  let typingEl=null;
+  function showTyping(){
+    const wrap=document.createElement('div');
+    wrap.className='jc-msg bot';wrap.id='jcTyp';
+    wrap.innerHTML='<div class="jc-typing-wrap"><div class="jc-typing"><span></span><span></span><span></span></div></div>';
+    msgsEl.appendChild(wrap);msgsEl.scrollTop=msgsEl.scrollHeight;
+    typingEl=wrap;
+  }
+  function hideTyping(){if(typingEl){typingEl.remove();typingEl=null;}}
+
+  /* ─── Llamar a Gemini API ─── */
+  async function callGemini(userText){
+    // Añadir al historial
+    history.push({role:'user',parts:[{text:userText}]});
+
+    const body={
+      system_instruction:{parts:[{text:SYSTEM_PROMPT}]},
+      contents: history,
+      generationConfig:{
+        temperature:0.7,
+        maxOutputTokens:600,
+        topP:0.9,
+      }
+    };
+
+    const resp = await fetch(GEMINI_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      throw new Error(err?.error?.message||`HTTP ${resp.status}`);
+    }
+
+    const data=await resp.json();
+    const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!reply) throw new Error('Respuesta vacía de Gemini');
+
+    // Guardar respuesta en historial
+    history.push({role:'model',parts:[{text:reply}]});
+    // Mantener historial en 20 mensajes max (10 turnos)
+    if(history.length > 20) history.splice(0,2);
+
+    return reply;
+  }
+
+  /* ─── Enviar mensaje ─── */
+  async function sendMsg(text){
+    text=text.trim();
+    if(!text||isBusy)return;
+    isBusy=true;
+    sendBtn.disabled=true;
     inp.value='';inp.style.height='auto';
-    qr.style.display='none';
-    addUser(text);
-    const t=typing();
-    const delay=600+Math.random()*700;
-    setTimeout(()=>{
-      rmTyping();
-      const reply=match(text);
-      addBot(reply);
-      if(!open)notif.classList.add('on');
-    },delay);
+    qrEl.style.display='none';
+
+    addMsg('user',text);
+    showTyping();
+
+    try{
+      let reply;
+      if(useGemini){
+        try{
+          reply=await callGemini(text);
+          updateStatus(true);
+        } catch(err){
+          console.warn('Gemini falló:',err.message);
+          updateStatus(false);
+          // Fallback local con delay simulado
+          await new Promise(r=>setTimeout(r,500));
+          reply=localMatch(text);
+        }
+      } else {
+        await new Promise(r=>setTimeout(r,600+Math.random()*600));
+        reply=localMatch(text);
+      }
+      hideTyping();
+      addMsg('bot',reply);
+    } catch(e){
+      hideTyping();
+      addMsg('bot','Ocurrió un error. Contacta a Jenny directamente:\n\n💬 **+593 968 279 747** (WhatsApp)\n✉️ ventas@suprohosting.com');
+    }
+
+    isBusy=false;
+    sendBtn.disabled=false;
+    if(!isOpen) notif.classList.add('on');
+    setTimeout(()=>inp.focus(),50);
   }
 
-  send.addEventListener('click',()=>sendMsg(inp.value));
+  /* ─── Toggle ventana ─── */
+  function toggleChat(){
+    isOpen=!isOpen;
+    win.classList.toggle('open',isOpen);
+    notif.classList.remove('on');
+    if(isOpen&&!isInited){
+      isInited=true;
+      addMsg('bot','¡Hola! 👋 Soy el asistente de **Jenny Álava**.\n\nPuedo responder preguntas sobre sus servicios, experiencia, precios y cómo contactarla. ¿En qué te ayudo?');
+    }
+    if(isOpen) setTimeout(()=>inp.focus(),200);
+  }
+
+  /* ─── Eventos ─── */
+  btn.addEventListener('click',toggleChat);
+  cls.addEventListener('click',()=>{isOpen=false;win.classList.remove('open');});
+
+  sendBtn.addEventListener('click',()=>sendMsg(inp.value));
   inp.addEventListener('keydown',e=>{
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg(inp.value);}
   });
   inp.addEventListener('input',()=>{
     inp.style.height='auto';
-    inp.style.height=Math.min(inp.scrollHeight,80)+'px';
+    inp.style.height=Math.min(inp.scrollHeight,90)+'px';
   });
 
-  /* Quick replies */
-  qr.querySelectorAll('.jc-q').forEach(b=>{
+  qrEl.querySelectorAll('.jc-q').forEach(b=>{
     b.addEventListener('click',()=>sendMsg(b.getAttribute('data-q')));
   });
 
-  /* Auto-show notif after 8s */
-  setTimeout(()=>{if(!open)notif.classList.add('on');},8000);
+  // Mostrar notif después de 10s
+  setTimeout(()=>{if(!isOpen)notif.classList.add('on');},10000);
+
 })();
 </script>
 </body>
