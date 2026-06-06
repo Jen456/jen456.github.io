@@ -61,7 +61,11 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6.5vw,88px);line-hei
 h1 .c{color:var(--cyan);}
 .hero-roles{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;opacity:0;animation:fadeUp .6s .5s forwards;}
 .role-tag{font-family:'JetBrains Mono',monospace;font-size:10px;border:1px solid rgba(0,200,255,.25);color:var(--cyan);padding:4px 11px;border-radius:4px;letter-spacing:.5px;}
-.hero-desc{font-size:15px;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:34px;opacity:0;animation:fadeUp .6s .6s forwards;}
+.hero-desc{font-size:15px;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:22px;opacity:0;animation:fadeUp .6s .6s forwards;}
+.hero-trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:570px;margin-bottom:30px;opacity:0;animation:fadeUp .6s .65s forwards;}
+.trust-card{background:linear-gradient(135deg,rgba(6,17,42,.76),rgba(10,28,62,.46));border:1px solid rgba(0,200,255,.12);border-radius:11px;padding:11px 12px;}
+.trust-card strong{display:block;font-size:12px;color:var(--text);margin-bottom:3px;}
+.trust-card span{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:.7px;text-transform:uppercase;}
 .hero-stats{display:flex;gap:34px;margin-bottom:38px;opacity:0;animation:fadeUp .6s .7s forwards;flex-wrap:wrap;}
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--cyan);line-height:1;}
 .stat-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
@@ -74,6 +78,15 @@ h1 .c{color:var(--cyan);}
 .hero-photo-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 0 60px rgba(26,109,255,.22);}
 .hero-photo-frame::before{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to top,var(--navy) 0%,transparent 35%);}
 .hero-photo-frame img{width:100%;display:block;object-fit:cover;object-position:top;height:390px;filter:saturate(.9);}
+.hero-photo-frame::after{content:'';position:absolute;inset:1px;border-radius:19px;border:1px solid rgba(255,255,255,.08);z-index:3;pointer-events:none;}
+.hero-photo-fallback{display:none;height:390px;background:radial-gradient(circle at 50% 18%,rgba(0,200,255,.28),transparent 24%),linear-gradient(160deg,rgba(10,28,62,.95),rgba(3,11,26,.96));place-items:center;text-align:center;padding:26px;}
+.hero-photo-fallback.active{display:grid;}
+.hero-initials{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;margin:auto auto 18px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#001022;font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:3px;box-shadow:0 0 55px rgba(0,200,255,.35);}
+.hero-fallback-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.hero-fallback-copy{font-size:12px;line-height:1.6;color:var(--muted);}
+.hero-impact{position:absolute;left:-26px;bottom:22px;z-index:6;background:rgba(3,11,26,.86);border:1px solid rgba(0,200,255,.2);backdrop-filter:blur(16px);border-radius:14px;padding:12px 14px;box-shadow:0 18px 45px rgba(0,0,0,.35);}
+.hero-impact strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--cyan);letter-spacing:1px;}
+.hero-impact span{display:block;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
 .cert-badges{position:absolute;right:-16px;top:22px;z-index:5;display:flex;flex-direction:column;gap:7px;}
 .cbadge{background:rgba(6,17,42,.95);border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:1px;white-space:nowrap;}
 
@@ -334,7 +347,7 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
   font-family:'JetBrains Mono',monospace;letter-spacing:.3px;
 }
 
-/* Status bar (muestra si usa Gemini o local) */
+/* Status bar (muestra si usa IA externa o modo local) */
 .jc-status{
   font-size:10px;text-align:center;padding:4px 14px;
   font-family:'JetBrains Mono',monospace;letter-spacing:.3px;flex-shrink:0;
@@ -349,8 +362,10 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
   .nav-hamburger{display:flex;}
   .hero{padding:90px 20px 50px;}
   .hero-content{flex-direction:column-reverse;gap:32px;}
-  .hero-photo-wrap{width:100%;max-width:260px;margin:auto;}
-  .hero-photo-frame img{height:280px;}
+  .hero-photo-wrap{width:100%;max-width:280px;margin:auto;}
+  .hero-photo-frame img,.hero-photo-fallback{height:300px;}
+  .hero-impact{left:12px;bottom:12px;}
+  .hero-trust{grid-template-columns:1fr;}
   .cert-badges{right:-8px;top:8px;}
   .cbadge{font-size:8px;padding:3px 6px;}
   .hero-stats{gap:20px;}
@@ -424,6 +439,11 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
         <span class="role-tag">💻 Full Stack Dev</span><span class="role-tag">📡 Telecomunicaciones</span>
       </div>
       <p class="hero-desc">Ingeniera por la <strong>ESPOL</strong>, MSc en Ciberseguridad. Construyo robots, configuro redes, audito sistemas y desarrollo software.</p>
+      <div class="hero-trust">
+        <div class="trust-card"><strong>Auditorías listas</strong><span>Reporte PDF + remediación</span></div>
+        <div class="trust-card"><strong>Hardware + software</strong><span>IoT, robots y APIs</span></div>
+        <div class="trust-card"><strong>Respuesta comercial</strong><span>WhatsApp en 24h</span></div>
+      </div>
       <div class="hero-stats">
         <div><div class="stat-num">13+</div><div class="stat-label">Años Exp.</div></div>
         <div><div class="stat-num">74</div><div class="stat-label">Repos GitHub</div></div>
@@ -437,8 +457,16 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
     </div>
     <div class="hero-photo-wrap">
       <div class="hero-photo-frame">
-        <img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.style.minHeight='300px';this.style.display='block';">
+        <img src="https://jen456.github.io/foto.jpg" alt="Ing. Jenny Álava" onerror="this.hidden=true;this.nextElementSibling.classList.add('active');">
+        <div class="hero-photo-fallback" aria-label="Banner profesional de Jenny Álava">
+          <div>
+            <div class="hero-initials">JA</div>
+            <div class="hero-fallback-title">Ing. Jenny Álava</div>
+            <div class="hero-fallback-copy">Electrónica · Ciberseguridad · Robótica · Full Stack</div>
+          </div>
+        </div>
       </div>
+      <div class="hero-impact"><strong>13+</strong><span>años resolviendo tecnología</span></div>
       <div class="cert-badges">
         <div class="cbadge">✦ CCNA 1·2·3</div><div class="cbadge">✦ CFOT</div>
         <div class="cbadge">✦ MSc CYBER</div><div class="cbadge">✦ ESPOL</div><div class="cbadge">✦ 74 REPOS</div>
@@ -615,7 +643,7 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
     </div>
 
     <!-- Status bar -->
-    <div class="jc-status ai" id="jcStatus">✦ Gemini AI activo — conversación inteligente</div>
+    <div class="jc-status local" id="jcStatus">⚡ Asistente local activo · IA integrable por webhook</div>
 
     <!-- Mensajes -->
     <div class="jc-msgs" id="jcMsgs"></div>
@@ -636,7 +664,7 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
         <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
       </button>
     </div>
-    <div class="jc-chat-foot">Powered by Google Gemini · Jenny AI · SuproHosting</div>
+    <div class="jc-chat-foot">Jenny AI · Respuestas locales · Webhook ready</div>
   </div>
 </div>
 
@@ -667,19 +695,22 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding
 })();
 
 /* ══════════════════════════════════════════════════
-   CHATBOT — Google Gemini API + fallback inteligente
+   CHATBOT — asistente local + integración IA por webhook
    CDN: marked.min.js + dompurify (cargados en <head>)
 ══════════════════════════════════════════════════ */
 (function(){
 
   /* ─────────────────────────────────────────
      CONFIGURACIÓN
-     Obtén tu API KEY gratuita en:
-     https://aistudio.google.com/app/apikey
-     Es completamente gratis (Gemini 1.5 Flash)
+     Para conectar una IA real en GitHub Pages sin exponer claves:
+     1) Crea un endpoint serverless/n8n/Make que reciba {message, history, system}.
+     2) Define window.JENNY_AI_CONFIG = { webhookUrl: 'https://tu-endpoint' } antes de este script.
+     3) El endpoint debe responder { reply: 'texto en Markdown' }.
   ───────────────────────────────────────── */
-  const GEMINI_KEY = 'AIzaSyD-REEMPLAZA-CON-TU-API-KEY-AQUI';
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
+  const CHAT_CONFIG = {
+    webhookUrl: window.JENNY_AI_CONFIG?.webhookUrl || '',
+    timeoutMs: window.JENNY_AI_CONFIG?.timeoutMs || 12000,
+  };
 
   const SYSTEM_PROMPT = `Eres el asistente virtual de Ing. Jenny Julizza Álava Bolaños, ingeniera ecuatoriana experta en electrónica, telecomunicaciones, ciberseguridad, IoT, robótica y desarrollo full stack. Estás en su sitio web personal jen456.github.io.
 
@@ -749,9 +780,9 @@ INSTRUCCIONES:
   }
 
   /* ─── Variables de estado ─── */
-  const history = []; // historial de conversación para Gemini
+  const history = []; // historial de conversación para un webhook IA opcional
   let isOpen = false, isInited = false, isBusy = false;
-  let useGemini = (GEMINI_KEY && !GEMINI_KEY.includes('REEMPLAZA'));
+  let useAI = Boolean(CHAT_CONFIG.webhookUrl);
 
   /* ─── DOM refs ─── */
   const btn=document.getElementById('jcBtn');
@@ -767,22 +798,22 @@ INSTRUCCIONES:
 
   /* ─── Actualizar status bar ─── */
   function updateStatus(ok){
-    useGemini = ok;
+    useAI = ok;
     if(ok){
       statusEl.className='jc-status ai';
-      statusEl.textContent='✦ Gemini AI activo — conversación inteligente';
+      statusEl.textContent='✦ IA conectada por webhook — conversación inteligente';
       badgeEl.textContent='AI';
       badgeEl.style.color='var(--cyan)';
       badgeEl.style.borderColor='rgba(0,200,255,.3)';
     } else {
       statusEl.className='jc-status local';
-      statusEl.textContent='⚡ Modo local activo — respuestas rápidas';
+      statusEl.textContent='⚡ Asistente local activo · IA integrable por webhook';
       badgeEl.textContent='LOCAL';
       badgeEl.style.color='var(--gold)';
       badgeEl.style.borderColor='rgba(201,168,76,.3)';
     }
   }
-  updateStatus(useGemini);
+  updateStatus(useAI);
 
   /* ─── Render markdown seguro ─── */
   function renderMd(text){
@@ -822,42 +853,39 @@ INSTRUCCIONES:
   }
   function hideTyping(){if(typingEl){typingEl.remove();typingEl=null;}}
 
-  /* ─── Llamar a Gemini API ─── */
-  async function callGemini(userText){
-    // Añadir al historial
-    history.push({role:'user',parts:[{text:userText}]});
+  /* ─── Llamar al webhook IA opcional ─── */
+  async function callAI(userText){
+    if(!CHAT_CONFIG.webhookUrl) throw new Error('Webhook no configurado');
 
-    const body={
-      system_instruction:{parts:[{text:SYSTEM_PROMPT}]},
-      contents: history,
-      generationConfig:{
-        temperature:0.7,
-        maxOutputTokens:600,
-        topP:0.9,
-      }
-    };
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), CHAT_CONFIG.timeoutMs);
 
-    const resp = await fetch(GEMINI_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    });
+    try{
+      const resp = await fetch(CHAT_CONFIG.webhookUrl,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          message:userText,
+          history:history.slice(-10),
+          system:SYSTEM_PROMPT
+        }),
+        signal:controller.signal
+      });
 
-    if(!resp.ok){
-      const err=await resp.json().catch(()=>({}));
-      throw new Error(err?.error?.message||`HTTP ${resp.status}`);
+      if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+      const data=await resp.json();
+      const reply=data?.reply || data?.message || data?.text || '';
+      if(!reply) throw new Error('Respuesta vacía del webhook');
+      return reply;
+    } finally {
+      clearTimeout(timeout);
     }
+  }
 
-    const data=await resp.json();
-    const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!reply) throw new Error('Respuesta vacía de Gemini');
-
-    // Guardar respuesta en historial
-    history.push({role:'model',parts:[{text:reply}]});
-    // Mantener historial en 20 mensajes max (10 turnos)
-    if(history.length > 20) history.splice(0,2);
-
-    return reply;
+  function remember(role, text){
+    history.push({role,text});
+    if(history.length > 20) history.splice(0, history.length-20);
   }
 
   /* ─── Enviar mensaje ─── */
@@ -874,21 +902,22 @@ INSTRUCCIONES:
 
     try{
       let reply;
-      if(useGemini){
+      remember('user', text);
+      if(useAI){
         try{
-          reply=await callGemini(text);
+          reply=await callAI(text);
           updateStatus(true);
         } catch(err){
-          console.warn('Gemini falló:',err.message);
+          console.warn('Webhook IA no disponible:',err.message);
           updateStatus(false);
-          // Fallback local con delay simulado
-          await new Promise(r=>setTimeout(r,500));
+          await new Promise(r=>setTimeout(r,450));
           reply=localMatch(text);
         }
       } else {
-        await new Promise(r=>setTimeout(r,600+Math.random()*600));
+        await new Promise(r=>setTimeout(r,450+Math.random()*450));
         reply=localMatch(text);
       }
+      remember('assistant', reply);
       hideTyping();
       addMsg('bot',reply);
     } catch(e){
@@ -909,7 +938,7 @@ INSTRUCCIONES:
     notif.classList.remove('on');
     if(isOpen&&!isInited){
       isInited=true;
-      addMsg('bot','¡Hola! 👋 Soy el asistente de **Jenny Álava**.\n\nPuedo responder preguntas sobre sus servicios, experiencia, precios y cómo contactarla. ¿En qué te ayudo?');
+      addMsg('bot','¡Hola! 👋 Soy **Jenny AI**, el asistente de la Ing. Jenny Álava.\n\nPuedo orientarte sobre **servicios, precios, ciberseguridad, redes, IoT** y dejarte listo el contacto por WhatsApp. ¿Qué necesitas cotizar o resolver?');
     }
     if(isOpen) setTimeout(()=>inp.focus(),200);
   }
